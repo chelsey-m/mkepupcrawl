@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, X, ArrowUp, ArrowDown, Share2, Map, Copy, FileEdit } from 'lucide-react';
+import { MapPin, X, ArrowUp, ArrowDown, Share2, Map, Save, FileEdit } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
 
 const DayPlanner: React.FC = () => {
@@ -16,7 +16,7 @@ const DayPlanner: React.FC = () => {
 
   const [showNotes, setShowNotes] = useState(false);
   const [notes, setNotes] = useState(activePlan?.notes || '');
-  const [shareCodeCopied, setShareCodeCopied] = useState(false);
+  const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
 
   if (!activePlan) return null;
 
@@ -24,19 +24,29 @@ const DayPlanner: React.FC = () => {
     locations.find(loc => loc.id === id)
   ).filter(Boolean);
 
+  const showToast = (message: string) => {
+    setToast({ message, visible: true });
+    setTimeout(() => setToast({ message: '', visible: false }), 3000);
+  };
+
   const handleSharePlan = () => {
     const shareCode = generateShareCode();
     const shareUrl = `${window.location.origin}?plan=${shareCode}`;
     navigator.clipboard.writeText(shareUrl);
-    setShareCodeCopied(true);
-    setTimeout(() => setShareCodeCopied(false), 2000);
+    showToast("Link copied! Share this plan with a friend 🐶🍻");
   };
 
   const handleExportToMaps = () => {
     const mapsUrl = exportToGoogleMaps();
     if (mapsUrl) {
       window.open(mapsUrl, '_blank');
+      showToast("Opening your pup-crawl route in Google Maps!");
     }
+  };
+
+  const handleSavePlan = () => {
+    localStorage.setItem(`plan_${activePlan.id}`, JSON.stringify(activePlan));
+    showToast("Your Dog Day Plan was saved to this device! 🐾");
   };
 
   const handleSaveNotes = () => {
@@ -45,7 +55,7 @@ const DayPlanner: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg rounded-t-xl z-40 animate-slideUp max-h-[60vh] flex flex-col">
+    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg rounded-t-xl z-40 animate-slideUp max-h-[80vh] flex flex-col">
       <div className="p-4 border-b border-gray-200 flex justify-between items-center">
         <div>
           <h2 className="text-lg font-bold text-gray-800">{activePlan.name}</h2>
@@ -54,36 +64,20 @@ const DayPlanner: React.FC = () => {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setShowNotes(true)}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
-            title="Add Notes"
+            className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
+            title="Add notes about your pup crawl"
           >
             <FileEdit className="w-5 h-5" />
           </button>
           <button
-            onClick={handleSharePlan}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
-            title="Share Plan"
-          >
-            <Share2 className="w-5 h-5" />
-          </button>
-          {planLocations.length > 1 && (
-            <button
-              onClick={handleExportToMaps}
-              className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
-              title="Export to Google Maps"
-            >
-              <Map className="w-5 h-5" />
-            </button>
-          )}
-          <button
             onClick={() => selectPlan(null)}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+            className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
       </div>
-      
+
       <div className="overflow-y-auto flex-1">
         {showNotes ? (
           <div className="p-4">
@@ -177,10 +171,45 @@ const DayPlanner: React.FC = () => {
           </>
         )}
       </div>
-      
-      {shareCodeCopied && (
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full bg-green-500 text-white px-4 py-2 rounded-t-lg animate-fadeIn">
-          Share link copied to clipboard!
+
+      {/* Action buttons - sticky footer */}
+      <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
+        <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+          <button
+            onClick={handleSavePlan}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm sm:text-base"
+            title="Save your current plan so it's waiting for you later"
+          >
+            <Save className="w-4 h-4" />
+            <span>💾 Save Plan to This Device</span>
+          </button>
+          
+          <button
+            onClick={handleSharePlan}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm sm:text-base"
+            title="Generate a link so someone else can view your pup adventure"
+          >
+            <Share2 className="w-4 h-4" />
+            <span>🔗 Share Plan</span>
+          </button>
+          
+          {planLocations.length > 1 && (
+            <button
+              onClick={handleExportToMaps}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm sm:text-base"
+              title="Tap to get walking or driving directions to your selected stops"
+            >
+              <Map className="w-4 h-4" />
+              <span>📍 Open in Google Maps</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Toast message */}
+      {toast.visible && (
+        <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg text-center max-w-sm mx-auto z-50 animate-fadeIn">
+          {toast.message}
         </div>
       )}
     </div>
