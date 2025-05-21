@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Flag, PawPrint, Plus } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
+import { PrivateNote } from '../types';
 
 interface PlaceDetailProps {
   onClose: () => void;
 }
+
+const PRIVATE_NOTES_KEY = 'mkePupCrawl_privateNotes';
 
 const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   const { selectedLocation, addLocationToPlan, activePlan, sendReport } = useLocations();
@@ -13,6 +16,46 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   const [reportEmail, setReportEmail] = useState('');
   const [reportSent, setReportSent] = useState(false);
   const [addedToPlan, setAddedToPlan] = useState(false);
+  const [privateNote, setPrivateNote] = useState('');
+  const [isEditingNote, setIsEditingNote] = useState(false);
+
+  useEffect(() => {
+    if (selectedLocation) {
+      const savedNotes = localStorage.getItem(PRIVATE_NOTES_KEY);
+      if (savedNotes) {
+        const notes: PrivateNote[] = JSON.parse(savedNotes);
+        const locationNote = notes.find(note => note.locationId === selectedLocation.id);
+        if (locationNote) {
+          setPrivateNote(locationNote.content);
+        } else {
+          setPrivateNote('');
+        }
+      }
+    }
+  }, [selectedLocation]);
+
+  const savePrivateNote = () => {
+    if (!selectedLocation) return;
+
+    const savedNotes = localStorage.getItem(PRIVATE_NOTES_KEY);
+    let notes: PrivateNote[] = savedNotes ? JSON.parse(savedNotes) : [];
+    
+    const noteIndex = notes.findIndex(note => note.locationId === selectedLocation.id);
+    const newNote: PrivateNote = {
+      locationId: selectedLocation.id,
+      content: privateNote,
+      lastUpdated: new Date().toISOString()
+    };
+
+    if (noteIndex >= 0) {
+      notes[noteIndex] = newNote;
+    } else {
+      notes.push(newNote);
+    }
+
+    localStorage.setItem(PRIVATE_NOTES_KEY, JSON.stringify(notes));
+    setIsEditingNote(false);
+  };
 
   if (!selectedLocation) return null;
 
@@ -23,7 +66,6 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
       addLocationToPlan(selectedLocation.id);
       setAddedToPlan(true);
       
-      // Reset after 2 seconds
       setTimeout(() => {
         setAddedToPlan(false);
       }, 2000);
@@ -42,7 +84,6 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
       
       if (success) {
         setReportSent(true);
-        // Reset form after 3 seconds
         setTimeout(() => {
           setShowReportForm(false);
           setReportSent(false);
@@ -53,7 +94,6 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
     }
   };
 
-  // Helper function to render the paw rating
   const renderPawRating = () => {
     return (
       <div className="flex items-center">
@@ -71,7 +111,6 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black bg-opacity-50 animate-fadeIn">
       <div className="bg-white w-full max-w-md rounded-t-xl sm:rounded-xl shadow-xl overflow-hidden transform animate-slideUp">
-        {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-800">{name}</h2>
           <button 
@@ -82,9 +121,7 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
           </button>
         </div>
         
-        {/* Content */}
         <div className="p-4">
-          {/* Type and Rating */}
           <div className="flex justify-between items-center mb-3">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
               {type === 'both' ? 'Indoor & Outdoor' : type}
@@ -92,22 +129,64 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
             {renderPawRating()}
           </div>
           
-          {/* Address */}
           {address && (
             <div className="mb-3 text-gray-600">
               <p>{address}</p>
             </div>
           )}
           
-          {/* Notes */}
           {notes && (
             <div className="mb-4">
               <h3 className="text-sm font-medium text-gray-500 mb-1">Notes</h3>
               <p className="text-gray-700">{notes}</p>
             </div>
           )}
+
+          {/* Private Notes Section */}
+          <div className="mb-4 border-t border-gray-200 pt-4">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">Your private notes</h3>
+            {isEditingNote ? (
+              <div>
+                <textarea
+                  value={privateNote}
+                  onChange={(e) => setPrivateNote(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  rows={4}
+                  placeholder="Add your personal notes about this location..."
+                />
+                <div className="flex justify-end space-x-2 mt-2">
+                  <button
+                    onClick={() => setIsEditingNote(false)}
+                    className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={savePrivateNote}
+                    className="px-3 py-1 bg-amber-500 text-white rounded hover:bg-amber-600"
+                  >
+                    Save Note
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div 
+                onClick={() => setIsEditingNote(true)}
+                className="cursor-pointer group"
+              >
+                {privateNote ? (
+                  <p className="text-gray-700 p-2 rounded bg-gray-50 group-hover:bg-gray-100">
+                    {privateNote}
+                  </p>
+                ) : (
+                  <p className="text-gray-500 italic p-2 rounded bg-gray-50 group-hover:bg-gray-100">
+                    Click to add your private notes...
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
           
-          {/* Yelp Link */}
           {yelpLink && (
             <a 
               href={yelpLink} 
@@ -120,7 +199,6 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
             </a>
           )}
           
-          {/* Action Buttons */}
           <div className="flex flex-col space-y-2 mt-4">
             {activePlan && (
               <button
@@ -154,7 +232,6 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
             </button>
           </div>
           
-          {/* Report Form */}
           {showReportForm && (
             <div className="mt-4 border-t border-gray-200 pt-4 animate-fadeIn">
               <h3 className="text-lg font-medium text-gray-800 mb-2">

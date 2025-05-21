@@ -34,3 +34,10 @@ export interface Report {
   issue: string;
   contactEmail?: string;
 }
+
+// Private notes type
+export interface PrivateNote {
+  locationId: string;
+  content: string;
+  lastUpdated: string;
+}
