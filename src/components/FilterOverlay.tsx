@@ -80,6 +80,7 @@ const FilterOverlay: React.FC = () => {
             }`
           : 'w-[300px]'
       }`}
+      style={{ touchAction: 'pan-y' }}
     >
       <div 
         className={`bg-white/95 backdrop-blur-sm shadow-lg flex flex-col overflow-hidden ${
@@ -137,8 +138,9 @@ const FilterOverlay: React.FC = () => {
 
         <div 
           ref={listRef} 
-          className="flex-1 overflow-y-auto"
+          className="flex-1 overflow-y-auto overscroll-contain"
           onScroll={handleScroll}
+          style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <div className="p-2">
             <h3 className="text-xs font-semibold uppercase text-gray-500 px-2 mb-2">
