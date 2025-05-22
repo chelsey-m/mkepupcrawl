@@ -100,14 +100,10 @@ const LocationMarker = React.memo(({
   const [isMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
   
   const handleClick = useCallback((e: any) => {
-    e.originalEvent.stopPropagation();
-    if (isMobile) {
-      // Close any open popups first
-      const map = markerRef.current?.getElement()._map;
-      map?.closePopup();
-    }
+    e.preventDefault();
+    e.stopPropagation();
     onSelect(location.id);
-  }, [location.id, onSelect, isMobile]);
+  }, [location.id, onSelect]);
 
   useEffect(() => {
     if (isSelected && markerRef.current) {
@@ -134,11 +130,7 @@ const LocationMarker = React.memo(({
           <PawRating rating={location.rating} />
           <button 
             className="mt-3 px-4 py-2 bg-amber-500 text-white text-sm rounded-full hover:bg-amber-600 transition-colors w-full touch-manipulation"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleClick(e);
-            }}
+            onClick={handleClick}
             style={{ touchAction: 'manipulation' }}
           >
             View Details
