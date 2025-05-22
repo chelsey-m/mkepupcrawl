@@ -1,44 +1,39 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { Icon, LatLngTuple } from 'leaflet';
+import { Icon, LatLngTuple, DivIcon } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
 import { Location } from '../types';
 import { PawPrint } from 'lucide-react';
-import FilterOverlay from './FilterOverlay';
 
 const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 
-// Memoize icons to prevent recreation on every render
+// Create icons once outside component to prevent recreation
+const createIcon = (type: Location['type']) => new Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 const icons = {
-  indoor: new Icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  }),
-  outdoor: new Icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  }),
-  both: new Icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  })
+  indoor: createIcon('indoor'),
+  outdoor: createIcon('outdoor'),
+  both: createIcon('both')
+};
+
+// Optimize cluster icon creation
+const createClusterIcon = (cluster: any) => {
+  const count = cluster.getChildCount();
+  return new DivIcon({
+    html: `<div class="cluster-icon">${count}</div>`,
+    className: 'custom-cluster-icon',
+    iconSize: [40, 40]
+  });
 };
 
 const LocationFinder: React.FC = () => {
@@ -67,8 +62,6 @@ const LocationFinder: React.FC = () => {
   return null;
 };
 
-const getLocationIcon = (type: Location['type']) => icons[type];
-
 const PawRating: React.FC<{ rating: number }> = React.memo(({ rating }) => {
   return (
     <div className="flex items-center mt-1">
@@ -87,14 +80,19 @@ const LocationMarker: React.FC<{
   location: Location;
   onSelect: (id: string) => void;
 }> = React.memo(({ location, onSelect }) => {
-  const icon = useMemo(() => getLocationIcon(location.type), [location.type]);
+  const icon = useMemo(() => icons[location.type], [location.type]);
+  
+  const handleClick = useCallback((e: any) => {
+    e.originalEvent.stopPropagation();
+    onSelect(location.id);
+  }, [location.id, onSelect]);
   
   return (
     <Marker 
       position={location.coordinates}
       icon={icon}
       eventHandlers={{
-        click: () => onSelect(location.id),
+        click: handleClick,
       }}
     >
       <Popup className="leaflet-popup">
@@ -108,7 +106,7 @@ const LocationMarker: React.FC<{
           <PawRating rating={location.rating} />
           <button 
             className="mt-3 px-4 py-2 bg-amber-500 text-white text-sm rounded-full hover:bg-amber-600 transition-colors w-full"
-            onClick={() => onSelect(location.id)}
+            onClick={handleClick}
           >
             View Details
           </button>
@@ -164,6 +162,8 @@ const MapView: React.FC = () => {
         zoomControl={true}
         attributionControl={true}
         preferCanvas={true}
+        tap={true}
+        tapTolerance={15}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -174,9 +174,12 @@ const MapView: React.FC = () => {
         
         <MarkerClusterGroup
           chunkedLoading
-          maxClusterRadius={60}
+          maxClusterRadius={40}
           spiderfyOnMaxZoom={true}
           zoomToBoundsOnClick={true}
+          showCoverageOnHover={false}
+          iconCreateFunction={createClusterIcon}
+          disableClusteringAtZoom={16}
         >
           {filteredLocations.map(location => (
             <LocationMarker

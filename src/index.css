@@ -76,6 +76,31 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
+/* Custom cluster styling */
+.custom-cluster-icon {
+  background-color: white;
+  border: 2px solid #f59e0b;
+  border-radius: 50%;
+  color: #f59e0b;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cluster-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
 /* Paw print ratings */
 .paw-print {
   transition: all 0.2s ease;
