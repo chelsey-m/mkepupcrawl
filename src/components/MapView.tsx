@@ -122,8 +122,7 @@ const LocationMarker = React.memo(({
       position={location.coordinates}
       icon={icon}
       eventHandlers={{ 
-        click: handleClick,
-        touchend: handleClick // Add touch event handler
+        click: handleClick
       }}
     >
       <Popup className="leaflet-popup">
@@ -134,11 +133,13 @@ const LocationMarker = React.memo(({
           </p>
           <PawRating rating={location.rating} />
           <button 
-            className="mt-3 px-4 py-2 bg-amber-500 text-white text-sm rounded-full hover:bg-amber-600 transition-colors w-full"
+            className="mt-3 px-4 py-2 bg-amber-500 text-white text-sm rounded-full hover:bg-amber-600 transition-colors w-full touch-manipulation"
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               handleClick(e);
             }}
+            style={{ touchAction: 'manipulation' }}
           >
             View Details
           </button>

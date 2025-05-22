@@ -51,6 +51,7 @@
   height: 100%;
   width: 100%;
   z-index: 1;
+  touch-action: pan-x pan-y;
 }
 
 .leaflet-popup {
@@ -138,6 +139,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Outfit', sans-serif;
   letter-spacing: -0.01em;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -171,6 +174,10 @@ button {
 @media (max-width: 768px) {
   .cluster-icon {
     transform-origin: center;
+  }
+  
+  .leaflet-popup-content button {
+    min-height: 44px;
   }
 }
 
