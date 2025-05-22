@@ -11,24 +11,33 @@ const DEFAULT_ZOOM = 13;
 
 // Custom icons for indoor and outdoor locations
 const indoorIcon = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
 
 const outdoorIcon = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
 
 const bothIcon = new Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
+  shadowSize: [41, 41]
 });
 
 // Component to locate user and update map view
@@ -105,11 +114,13 @@ const MapView: React.FC = () => {
   }, []);
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full relative z-0">
       <MapContainer 
         center={userLocation || DEFAULT_CENTER} 
         zoom={DEFAULT_ZOOM} 
         className="h-full w-full"
+        zoomControl={true}
+        attributionControl={true}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -129,17 +140,17 @@ const MapView: React.FC = () => {
               },
             }}
           >
-            <Popup className="custom-popup">
-              <div className="text-center">
-                <h3 className="font-bold text-lg">{location.name}</h3>
-                <p className="text-sm capitalize">
+            <Popup className="leaflet-popup">
+              <div className="text-center p-2">
+                <h3 className="font-bold text-lg mb-1">{location.name}</h3>
+                <p className="text-sm capitalize mb-2">
                   {location.type === 'both' 
                     ? 'Indoor & Outdoor' 
                     : location.type}
                 </p>
                 <PawRating rating={location.rating} />
                 <button 
-                  className="mt-2 px-2 py-1 bg-amber-500 text-white text-sm rounded hover:bg-amber-600 transition-colors"
+                  className="mt-3 px-4 py-2 bg-amber-500 text-white text-sm rounded-full hover:bg-amber-600 transition-colors w-full"
                   onClick={() => selectLocation(location.id)}
                 >
                   View Details
@@ -153,14 +164,17 @@ const MapView: React.FC = () => {
           <Marker 
             position={userLocation}
             icon={new Icon({
-              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+              iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+              iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+              shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
               iconSize: [25, 41],
               iconAnchor: [12, 41],
               popupAnchor: [1, -34],
+              shadowSize: [41, 41]
             })}
           >
             <Popup>
-              <div>
+              <div className="text-center p-2">
                 <h3 className="font-bold">Your Location</h3>
               </div>
             </Popup>

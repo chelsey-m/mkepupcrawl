@@ -47,27 +47,33 @@
 }
 
 /* Custom map styling */
-.leaflet-tile-pane {
-  filter: saturate(0.9) brightness(1.02);
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+}
+
+.leaflet-popup {
+  z-index: 1000;
 }
 
 .leaflet-popup-content-wrapper {
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .leaflet-popup-content {
-  margin: 12px 16px;
+  margin: 0;
+  min-width: 200px;
 }
 
 .leaflet-popup-tip-container {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-/* Map container styles */
-.leaflet-container {
-  height: 100%;
-  width: 100%;
+.leaflet-marker-icon {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 /* Paw print ratings */
