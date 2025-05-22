@@ -90,9 +90,9 @@
   transition: all 0.2s ease;
   cursor: pointer;
   font-weight: bold;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 8px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 4px;
 }
 
 .cluster-icon:hover {
@@ -101,22 +101,29 @@
 }
 
 .cluster-count {
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1;
+  margin-bottom: 2px;
+}
+
+.cluster-icon img {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
 }
 
 /* Brewery marker styling */
 .brewery-marker {
   background: transparent !important;
   border: none !important;
-  width: 32px !important;
-  height: 32px !important;
+  width: 24px !important;
+  height: 24px !important;
 }
 
 .brewery-marker img {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
   transition: transform 0.2s ease;
 }
 
@@ -210,14 +217,14 @@ button {
 
 /* Touch target sizes */
 .leaflet-marker-icon {
-  min-width: 44px !important;
-  min-height: 44px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
 .leaflet-marker-icon img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }

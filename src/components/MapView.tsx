@@ -15,16 +15,16 @@ const MOBILE_BREAKPOINT = 768;
 const createBreweryIcon = (): Icon => {
   return new Icon({
     iconUrl: '/brewery-icon.svg',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
+    iconSize: [24, 24],
+    iconAnchor: [12, 24],
+    popupAnchor: [0, -24],
     className: 'brewery-marker'
   });
 };
 
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
-  const size = Math.min(40 + Math.floor(count / 10) * 5, 60);
+  const size = Math.min(32 + Math.floor(count / 10) * 2, 48);
   
   return new DivIcon({
     html: `
