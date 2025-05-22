@@ -14,15 +14,16 @@ const AppContent: React.FC = () => {
     const addedBreweries = new Set();
     
     breweries.forEach(brewery => {
-      if (!addedBreweries.has(brewery.name)) {
-        addedBreweries.add(brewery.name);
+      const key = `${brewery.name}-${brewery.coordinates.join(',')}`;
+      if (!addedBreweries.has(key)) {
+        addedBreweries.add(key);
         addLocation({
           ...brewery,
           notes: `Dog-friendly ${brewery.type === 'both' ? 'indoor and outdoor' : 'outdoor only'} brewery.`
         });
       }
     });
-  }, []); // Only run once on mount
+  }, [addLocation]);
 
   return (
     <div className="flex flex-col h-screen">

@@ -56,10 +56,19 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     const initializeLocations = async () => {
       setIsLoading(true);
       try {
-        const initialLocations = breweries.map(brewery => ({
-          ...brewery,
-          id: nanoid()
-        }));
+        const uniqueBreweries = new Map();
+        
+        breweries.forEach(brewery => {
+          const key = `${brewery.name}-${brewery.coordinates.join(',')}`;
+          if (!uniqueBreweries.has(key)) {
+            uniqueBreweries.set(key, {
+              ...brewery,
+              id: nanoid()
+            });
+          }
+        });
+
+        const initialLocations = Array.from(uniqueBreweries.values());
 
         // Load custom ratings
         const savedRatings = localStorage.getItem(RATINGS_KEY);
@@ -94,8 +103,13 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
       id: nanoid(),
     };
     
-    // Check if location already exists by name
-    const exists = locations.some(loc => loc.name === newLocation.name);
+    // Check if location already exists by name and coordinates
+    const exists = locations.some(loc => 
+      loc.name === newLocation.name && 
+      loc.coordinates[0] === newLocation.coordinates[0] && 
+      loc.coordinates[1] === newLocation.coordinates[1]
+    );
+    
     if (!exists) {
       setLocations(prev => [...prev, newLocation]);
     }
