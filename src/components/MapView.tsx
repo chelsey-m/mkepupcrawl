@@ -97,11 +97,17 @@ const LocationMarker = React.memo(({
 }) => {
   const markerRef = useRef(null);
   const icon = useMemo(() => createBreweryIcon(), []);
+  const [isMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();
+    if (isMobile) {
+      // Close any open popups first
+      const map = markerRef.current?.getElement()._map;
+      map?.closePopup();
+    }
     onSelect(location.id);
-  }, [location.id, onSelect]);
+  }, [location.id, onSelect, isMobile]);
 
   useEffect(() => {
     if (isSelected && markerRef.current) {
@@ -115,7 +121,10 @@ const LocationMarker = React.memo(({
       ref={markerRef}
       position={location.coordinates}
       icon={icon}
-      eventHandlers={{ click: handleClick }}
+      eventHandlers={{ 
+        click: handleClick,
+        touchend: handleClick // Add touch event handler
+      }}
     >
       <Popup className="leaflet-popup">
         <div className="text-center p-2">
@@ -126,7 +135,10 @@ const LocationMarker = React.memo(({
           <PawRating rating={location.rating} />
           <button 
             className="mt-3 px-4 py-2 bg-amber-500 text-white text-sm rounded-full hover:bg-amber-600 transition-colors w-full"
-            onClick={handleClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClick(e);
+            }}
           >
             View Details
           </button>
