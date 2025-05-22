@@ -12,12 +12,19 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-const createBreweryIcon = () => {
+const createBreweryIcon = (type: 'indoor' | 'outdoor' | 'both') => {
+  const iconUrl = type === 'both' 
+    ? '/brewery-both.svg'
+    : type === 'indoor' 
+      ? '/brewery-indoor.svg' 
+      : '/brewery-outdoor.svg';
+
   return new Icon({
-    iconUrl: '/brewery-both.svg',
+    iconUrl,
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
+    className: 'brewery-marker'
   });
 };
 
@@ -94,7 +101,7 @@ const LocationMarker = React.memo(({
   isSelected: boolean;
 }) => {
   const markerRef = useRef(null);
-  const icon = useMemo(() => createBreweryIcon(), []);
+  const icon = useMemo(() => createBreweryIcon(location.type), [location.type]);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();

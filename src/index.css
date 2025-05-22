@@ -105,6 +105,25 @@
   line-height: 1;
 }
 
+/* Brewery marker styling */
+.brewery-marker {
+  background: transparent !important;
+  border: none !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.brewery-marker img {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.2s ease;
+}
+
+.brewery-marker:hover img {
+  transform: scale(1.1);
+}
+
 /* Typography improvements */
 body {
   @apply text-gray-800;

@@ -88,6 +88,19 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
   }, [plans]);
 
+  const addLocation = (location: Omit<Location, 'id'>) => {
+    const newLocation = {
+      ...location,
+      id: nanoid(),
+    };
+    
+    // Check if location already exists by name
+    const exists = locations.some(loc => loc.name === newLocation.name);
+    if (!exists) {
+      setLocations(prev => [...prev, newLocation]);
+    }
+  };
+
   // Filter locations based on the selected filter
   const filteredLocations = locations.filter(location => {
     if (filter.type !== 'all' && filter.type !== location.type && 
@@ -118,14 +131,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     const ratings = savedRatings ? JSON.parse(savedRatings) : {};
     ratings[locationId] = rating;
     localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings));
-  };
-
-  const addLocation = (location: Omit<Location, 'id'>) => {
-    const newLocation = {
-      ...location,
-      id: nanoid(),
-    };
-    setLocations(prev => [...prev, newLocation]);
   };
 
   const selectLocation = (locationId: string | null) => {
