@@ -5,6 +5,7 @@ import { Icon, LatLngTuple, DivIcon } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
 import { Location } from '../types';
 import { PawPrint } from 'lucide-react';
+import FilterOverlay from './FilterOverlay';
 
 const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
