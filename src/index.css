@@ -90,6 +90,9 @@
   transition: all 0.2s ease;
   cursor: pointer;
   font-weight: bold;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
 }
 
 .cluster-icon:hover {
@@ -184,4 +187,18 @@ button {
 
 .cursor-move:active {
   cursor: grabbing;
+}
+
+/* Touch target sizes */
+.leaflet-marker-icon {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.leaflet-marker-icon img {
+  width: 32px;
+  height: 32px;
 }
