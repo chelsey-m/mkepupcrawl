@@ -5,6 +5,7 @@ import { Icon, LatLngTuple } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
 import { Location } from '../types';
 import { PawPrint } from 'lucide-react';
+import FilterOverlay from './FilterOverlay';
 
 const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
@@ -155,7 +156,7 @@ const MapView: React.FC = () => {
   }, [userLocation]);
 
   return (
-    <div className="h-full w-full relative z-0">
+    <div className="h-full w-full relative">
       <MapContainer 
         center={userLocation || DEFAULT_CENTER} 
         zoom={DEFAULT_ZOOM} 
@@ -188,6 +189,7 @@ const MapView: React.FC = () => {
         
         {userMarker}
       </MapContainer>
+      <FilterOverlay />
     </div>
   );
 };
