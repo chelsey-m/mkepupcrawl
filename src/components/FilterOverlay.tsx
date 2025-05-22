@@ -161,3 +161,5 @@ const FilterOverlay: React.FC = () => {
     </div>
   );
 };
+
+export default FilterOverlay
