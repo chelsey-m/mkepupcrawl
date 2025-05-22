@@ -4,34 +4,50 @@ import MarkerClusterGroup from 'react-leaflet-cluster';
 import { Icon, LatLngTuple, DivIcon } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
 import { Location } from '../types';
-import { PawPrint } from 'lucide-react';
+import { Beer, PawPrint } from 'lucide-react';
 import FilterOverlay from './FilterOverlay';
 
 const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 
-// Create icons once outside component to prevent recreation
-const createIcon = (type: Location['type']) => new Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const icons = {
-  indoor: createIcon('indoor'),
-  outdoor: createIcon('outdoor'),
-  both: createIcon('both')
+// Create custom brewery icon
+const createBreweryIcon = (type: Location['type']) => {
+  const color = type === 'both' ? '#f59e0b' : type === 'indoor' ? '#0891b2' : '#059669';
+  const svg = `
+    <svg width="32" height="42" viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 0C7.16344 0 0 7.16344 0 16C0 24.8366 16 42 16 42C16 42 32 24.8366 32 16C32 7.16344 24.8366 0 16 0Z" fill="${color}"/>
+      <circle cx="16" cy="16" r="14" fill="white"/>
+      <path d="M10 10h12v12c0 3.314-2.686 6-6 6s-6-2.686-6-6V10z" fill="${color}"/>
+    </svg>
+  `;
+  
+  return new Icon({
+    iconUrl: `data:image/svg+xml;base64,${btoa(svg)}`,
+    iconSize: [32, 42],
+    iconAnchor: [16, 42],
+    popupAnchor: [0, -42],
+  });
 };
 
-// Optimize cluster icon creation
+const icons = {
+  indoor: createBreweryIcon('indoor'),
+  outdoor: createBreweryIcon('outdoor'),
+  both: createBreweryIcon('both')
+};
+
+// Custom cluster icon with brewery theme
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
   return new DivIcon({
-    html: `<div class="cluster-icon">${count}</div>`,
+    html: `
+      <div class="cluster-icon">
+        <span>${count}</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="currentColor">
+          <path d="M4 2h15l-2 20H6L4 2z"/>
+          <path d="M6 2h12v4H6z"/>
+        </svg>
+      </div>
+    `,
     className: 'custom-cluster-icon',
     iconSize: [40, 40]
   });
@@ -143,7 +159,13 @@ const MapView: React.FC = () => {
     return (
       <Marker 
         position={userLocation}
-        icon={icons.both}
+        icon={new Icon({
+          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+        })}
       >
         <Popup>
           <div className="text-center p-2">
