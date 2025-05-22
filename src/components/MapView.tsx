@@ -1,41 +1,43 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { Icon, LatLngTuple, DivIcon } from 'leaflet';
+import { Icon, LatLngTuple, DivIcon, LatLngBounds } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
 import { Location } from '../types';
-import { Beer, PawPrint } from 'lucide-react';
+import { Beer, PawPrint, Loader } from 'lucide-react';
 import FilterOverlay from './FilterOverlay';
+import debounce from 'lodash/debounce';
 
 const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
+const MOBILE_BREAKPOINT = 768;
 
-// Create custom brewery icon
-const createBreweryIcon = (type: Location['type']) => {
-  const color = type === 'both' ? '#f59e0b' : type === 'indoor' ? '#0891b2' : '#059669';
-  const svg = `
-    <svg width="32" height="42" viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 0C7.16344 0 0 7.16344 0 16C0 24.8366 16 42 16 42C16 42 32 24.8366 32 16C32 7.16344 24.8366 0 16 0Z" fill="${color}"/>
-      <circle cx="16" cy="16" r="14" fill="white"/>
-      <path d="M10 10h12v12c0 3.314-2.686 6-6 6s-6-2.686-6-6V10z" fill="${color}"/>
-    </svg>
-  `;
-  
-  return new Icon({
-    iconUrl: `data:image/svg+xml;base64,${btoa(svg)}`,
-    iconSize: [32, 42],
-    iconAnchor: [16, 42],
-    popupAnchor: [0, -42],
-  });
-};
-
+// Memoized brewery icons
 const icons = {
-  indoor: createBreweryIcon('indoor'),
-  outdoor: createBreweryIcon('outdoor'),
-  both: createBreweryIcon('both')
+  indoor: new Icon({
+    iconUrl: '/brewery-indoor.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+    className: 'brewery-marker'
+  }),
+  outdoor: new Icon({
+    iconUrl: '/brewery-outdoor.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+    className: 'brewery-marker'
+  }),
+  both: new Icon({
+    iconUrl: '/brewery-both.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+    className: 'brewery-marker'
+  })
 };
 
-// Custom cluster icon with brewery theme
+// Optimized cluster icon creation
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
   return new DivIcon({
@@ -44,7 +46,6 @@ const createClusterIcon = (cluster: any) => {
         <span>${count}</span>
         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="currentColor">
           <path d="M4 2h15l-2 20H6L4 2z"/>
-          <path d="M6 2h12v4H6z"/>
         </svg>
       </div>
     `,
@@ -53,8 +54,24 @@ const createClusterIcon = (cluster: any) => {
   });
 };
 
-// Map controller component for handling location updates
-const MapController: React.FC<{ selectedLocation: Location | null }> = ({ selectedLocation }) => {
+// Viewport manager for lazy loading
+const ViewportManager: React.FC<{
+  onViewportChange: (bounds: LatLngBounds) => void
+}> = ({ onViewportChange }) => {
+  const map = useMapEvents({
+    moveend: debounce(() => {
+      onViewportChange(map.getBounds());
+    }, 100),
+    zoomend: debounce(() => {
+      onViewportChange(map.getBounds());
+    }, 100)
+  });
+  return null;
+};
+
+const MapController: React.FC<{ 
+  selectedLocation: Location | null 
+}> = React.memo(({ selectedLocation }) => {
   const map = useMap();
   
   useEffect(() => {
@@ -67,55 +84,31 @@ const MapController: React.FC<{ selectedLocation: Location | null }> = ({ select
   }, [map, selectedLocation]);
   
   return null;
-};
-
-const LocationFinder: React.FC = () => {
-  const map = useMap();
-  
-  useEffect(() => {
-    map.locate({ setView: true, maxZoom: 16 });
-    
-    const handleLocationFound = (e: any) => {
-      const radius = e.accuracy / 2;
-    };
-    
-    const handleLocationError = () => {
-      console.log('Location access denied or unavailable');
-    };
-    
-    map.on('locationfound', handleLocationFound);
-    map.on('locationerror', handleLocationError);
-    
-    return () => {
-      map.off('locationfound', handleLocationFound);
-      map.off('locationerror', handleLocationError);
-    };
-  }, [map]);
-  
-  return null;
-};
-
-const PawRating: React.FC<{ rating: number }> = React.memo(({ rating }) => {
-  return (
-    <div className="flex items-center mt-1">
-      {Array.from({ length: 4 }).map((_, index) => (
-        <PawPrint 
-          key={index}
-          className={`w-4 h-4 ${index < rating ? 'text-amber-500' : 'text-gray-300'}`}
-          fill={index < rating ? '#f59e0b' : 'none'}
-        />
-      ))}
-    </div>
-  );
 });
 
-const LocationMarker: React.FC<{
+const PawRating = React.memo(({ rating }: { rating: number }) => (
+  <div className="flex items-center mt-1">
+    {Array.from({ length: 4 }).map((_, index) => (
+      <PawPrint 
+        key={index}
+        className={`w-4 h-4 ${index < rating ? 'text-amber-500' : 'text-gray-300'}`}
+        fill={index < rating ? '#f59e0b' : 'none'}
+      />
+    ))}
+  </div>
+));
+
+const LocationMarker = React.memo(({ 
+  location, 
+  onSelect, 
+  isSelected 
+}: {
   location: Location;
   onSelect: (id: string) => void;
   isSelected: boolean;
-}> = React.memo(({ location, onSelect, isSelected }) => {
-  const icon = useMemo(() => icons[location.type], [location.type]);
+}) => {
   const markerRef = useRef(null);
+  const icon = icons[location.type];
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();
@@ -134,17 +127,13 @@ const LocationMarker: React.FC<{
       ref={markerRef}
       position={location.coordinates}
       icon={icon}
-      eventHandlers={{
-        click: handleClick,
-      }}
+      eventHandlers={{ click: handleClick }}
     >
       <Popup className="leaflet-popup">
         <div className="text-center p-2">
           <h3 className="font-bold text-lg mb-1">{location.name}</h3>
           <p className="text-sm capitalize mb-2">
-            {location.type === 'both' 
-              ? 'Indoor & Outdoor' 
-              : location.type}
+            {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
           </p>
           <PawRating rating={location.rating} />
           <button 
@@ -162,45 +151,56 @@ const LocationMarker: React.FC<{
 const MapView: React.FC = () => {
   const { filteredLocations, selectLocation, selectedLocation } = useLocations();
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
+  const [visibleLocations, setVisibleLocations] = useState(filteredLocations);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
 
-  const handleLocationSelect = useCallback((id: string) => {
-    selectLocation(id);
-  }, [selectLocation]);
+  const handleViewportChange = useCallback((bounds: LatLngBounds) => {
+    const visible = filteredLocations.filter(location => 
+      bounds.contains(location.coordinates)
+    );
+    setVisibleLocations(visible);
+  }, [filteredLocations]);
+
+  useEffect(() => {
+    const handleResize = debounce(() => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    }, 100);
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
           setUserLocation([position.coords.latitude, position.coords.longitude]);
+          setIsLoading(false);
         },
-        error => {
-          console.error('Error getting location:', error);
+        () => {
+          setIsLoading(false);
         }
       );
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
-  const userMarker = useMemo(() => {
-    if (!userLocation) return null;
+  const handleLocationSelect = useCallback((id: string) => {
+    selectLocation(id);
+  }, [selectLocation]);
+
+  if (isLoading) {
     return (
-      <Marker 
-        position={userLocation}
-        icon={new Icon({
-          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-          iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-        })}
-      >
-        <Popup>
-          <div className="text-center p-2">
-            <h3 className="font-bold">Your Location</h3>
-          </div>
-        </Popup>
-      </Marker>
+      <div className="h-full w-full flex items-center justify-center bg-gray-50">
+        <div className="flex items-center space-x-2">
+          <Loader className="w-6 h-6 animate-spin text-amber-500" />
+          <span className="text-gray-600">Loading map...</span>
+        </div>
+      </div>
     );
-  }, [userLocation]);
+  }
 
   return (
     <div className="h-full w-full relative">
@@ -208,30 +208,32 @@ const MapView: React.FC = () => {
         center={userLocation || DEFAULT_CENTER} 
         zoom={DEFAULT_ZOOM} 
         className="h-full w-full"
-        zoomControl={true}
+        zoomControl={!isMobile}
         attributionControl={true}
         preferCanvas={true}
         tap={true}
-        tapTolerance={15}
+        tapTolerance={20}
+        wheelDebounceTime={100}
+        wheelPxPerZoomLevel={150}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
-        <LocationFinder />
+        <ViewportManager onViewportChange={handleViewportChange} />
         <MapController selectedLocation={selectedLocation} />
         
         <MarkerClusterGroup
           chunkedLoading
-          maxClusterRadius={40}
+          maxClusterRadius={isMobile ? 60 : 40}
           spiderfyOnMaxZoom={true}
           zoomToBoundsOnClick={true}
           showCoverageOnHover={false}
           iconCreateFunction={createClusterIcon}
-          disableClusteringAtZoom={16}
+          disableClusteringAtZoom={15}
         >
-          {filteredLocations.map(location => (
+          {visibleLocations.map(location => (
             <LocationMarker
               key={location.id}
               location={location}
@@ -241,7 +243,22 @@ const MapView: React.FC = () => {
           ))}
         </MarkerClusterGroup>
         
-        {userMarker}
+        {userLocation && (
+          <Marker 
+            position={userLocation}
+            icon={new Icon({
+              iconUrl: '/user-location.svg',
+              iconSize: [30, 30],
+              iconAnchor: [15, 15],
+            })}
+          >
+            <Popup>
+              <div className="text-center p-2">
+                <h3 className="font-bold">Your Location</h3>
+              </div>
+            </Popup>
+          </Marker>
+        )}
       </MapContainer>
       <FilterOverlay />
     </div>
