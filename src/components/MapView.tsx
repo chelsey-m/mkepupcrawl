@@ -12,40 +12,44 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-// Memoized brewery icons
+// Updated icon paths and configuration
 const icons = {
   indoor: new Icon({
     iconUrl: '/brewery-indoor.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40],
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
     className: 'brewery-marker'
   }),
   outdoor: new Icon({
     iconUrl: '/brewery-outdoor.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40],
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
     className: 'brewery-marker'
   }),
   both: new Icon({
     iconUrl: '/brewery-both.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40],
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
     className: 'brewery-marker'
   })
 };
 
-// Optimized cluster icon creation
+// Updated cluster icon with Beer icon from Lucide
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
   return new DivIcon({
     html: `
-      <div class="cluster-icon">
-        <span>${count}</span>
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="currentColor">
-          <path d="M4 2h15l-2 20H6L4 2z"/>
+      <div class="cluster-icon bg-amber-50 border-2 border-amber-500">
+        <span class="text-amber-700">${count}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500">
+          <path d="M17 11h1a3 3 0 0 1 0 6h-1"></path>
+          <path d="M9 12v6"></path>
+          <path d="M13 12v6"></path>
+          <path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5S9.44 3 11 3s2 .5 3 .5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"></path>
+          <path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"></path>
         </svg>
       </div>
     `,
@@ -54,7 +58,6 @@ const createClusterIcon = (cluster: any) => {
   });
 };
 
-// Optimized viewport manager with throttling
 const ViewportManager: React.FC<{
   onViewportChange: (bounds: LatLngBounds) => void
 }> = ({ onViewportChange }) => {
@@ -264,8 +267,8 @@ const MapView: React.FC = () => {
                 position={userLocation}
                 icon={new Icon({
                   iconUrl: '/user-location.svg',
-                  iconSize: [30, 30],
-                  iconAnchor: [15, 15],
+                  iconSize: [24, 24],
+                  iconAnchor: [12, 12],
                 })}
               >
                 <Popup>
