@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Filter, Beer } from 'lucide-react';
+import { SlidersHorizontal, Beer } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
 
 const Header: React.FC = () => {
@@ -41,7 +41,7 @@ const Header: React.FC = () => {
               showFilters ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             } transition-colors`}
           >
-            <Filter className="w-4 h-4" />
+            <SlidersHorizontal className="w-4 h-4" />
             <span>Filter</span>
           </button>
           
