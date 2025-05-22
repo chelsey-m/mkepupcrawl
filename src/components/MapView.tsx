@@ -12,21 +12,18 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-// Create custom marker icon with brewery initials
-const createBreweryIcon = (name: string): DivIcon => {
-  const initials = name
-    .split(' ')
-    .map(word => word[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-
+const createBreweryIcon = (): DivIcon => {
   return new DivIcon({
     html: `
       <div class="brewery-marker-container">
         <div class="brewery-marker-icon">
-          <Beer class="w-4 h-4 text-white" />
-          <span class="brewery-marker-initials">${initials}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+            <path d="M17 11h1a3 3 0 0 1 0 6h-1"></path>
+            <path d="M9 12v6"></path>
+            <path d="M13 12v6"></path>
+            <path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5S9.44 3 11 3s2 .5 3 .5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"></path>
+            <path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"></path>
+          </svg>
         </div>
       </div>
     `,
@@ -45,7 +42,13 @@ const createClusterIcon = (cluster: any) => {
     html: `
       <div class="cluster-icon" style="width: ${size}px; height: ${size}px">
         <span class="cluster-count">${count}</span>
-        <Beer class="w-4 h-4 text-white" />
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+          <path d="M17 11h1a3 3 0 0 1 0 6h-1"></path>
+          <path d="M9 12v6"></path>
+          <path d="M13 12v6"></path>
+          <path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5S9.44 3 11 3s2 .5 3 .5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"></path>
+          <path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"></path>
+        </svg>
       </div>
     `,
     className: 'custom-cluster-icon',
@@ -111,7 +114,7 @@ const LocationMarker = React.memo(({
   isSelected: boolean;
 }) => {
   const markerRef = useRef(null);
-  const icon = useMemo(() => createBreweryIcon(location.name), [location.name]);
+  const icon = useMemo(() => createBreweryIcon(), []);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();

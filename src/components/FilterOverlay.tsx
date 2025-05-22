@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocations } from '../context/LocationContext';
-import { ChevronRight, ChevronLeft, PawPrint, GripHorizontal, Loader } from 'lucide-react';
+import { ChevronRight, ChevronLeft, PawPrint, GripHorizontal, Loader, Beer } from 'lucide-react';
 import Draggable from 'react-draggable';
 
 const FilterOverlay: React.FC = () => {
@@ -98,9 +98,11 @@ const FilterOverlay: React.FC = () => {
           </div>
         </div>
 
-        <div ref={listRef} className="flex-1 overflow-y-auto overscroll-contain">
+        <div ref={listRef} className="flex-1 overflow-y-auto max-h-[calc(100vh-300px)]">
           <div className="p-2">
-            <h3 className="text-xs font-semibold uppercase text-gray-500 px-2 mb-2">Breweries</h3>
+            <h3 className="text-xs font-semibold uppercase text-gray-500 px-2 mb-2">
+              Breweries {locations.length > 0 && `(${locations.length})`}
+            </h3>
             {locations.length === 0 ? (
               <div className="flex items-center justify-center p-4 text-gray-500">
                 <Loader className="w-4 h-4 animate-spin mr-2" />
@@ -108,7 +110,7 @@ const FilterOverlay: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-1">
-                {locations.map(location => (
+                {[...new Set(locations)].map(location => (
                   <button
                     key={location.id}
                     ref={selectedLocation?.id === location.id ? selectedRef : null}
@@ -119,8 +121,11 @@ const FilterOverlay: React.FC = () => {
                         : 'hover:bg-gray-50'
                     }`}
                   >
-                    <div className="font-medium text-sm">{location.name}</div>
-                    <div className="text-xs text-gray-500 capitalize flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Beer className="w-4 h-4 text-amber-500" />
+                      <span className="font-medium text-sm">{location.name}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 capitalize flex items-center justify-between mt-1">
                       <span>{location.type === 'both' ? 'Indoor & Outdoor' : location.type}</span>
                       <div className="flex">
                         {Array.from({ length: 4 }).map((_, i) => (
@@ -162,4 +167,4 @@ const FilterOverlay: React.FC = () => {
   );
 };
 
-export default FilterOverlay
+export default FilterOverlay;
