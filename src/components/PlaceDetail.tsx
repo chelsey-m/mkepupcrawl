@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, ExternalLink, Flag, PawPrint, Plus } from 'lucide-react';
+import { X, ExternalLink, Flag, PawPrint, Plus, Minus, GripHorizontal } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
 import { PrivateNote } from '../types';
+import Draggable from 'react-draggable';
 
 interface PlaceDetailProps {
   onClose: () => void;
@@ -18,6 +19,19 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   const [addedToPlan, setAddedToPlan] = useState(false);
   const [privateNote, setPrivateNote] = useState('');
   const [isEditingNote, setIsEditingNote] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setPosition({ x: 0, y: 0 }); // Reset position on resize
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (selectedLocation) {
@@ -94,146 +108,167 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
     }
   };
 
-  const renderPawRating = () => {
-    return (
-      <div className="flex items-center">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <PawPrint 
-            key={index}
-            className={`w-5 h-5 ${index < rating ? 'text-amber-500' : 'text-gray-300'}`}
-            fill={index < rating ? '#f59e0b' : 'none'}
-          />
-        ))}
-      </div>
-    );
-  };
+  const renderPawRating = () => (
+    <div className="flex items-center">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <PawPrint 
+          key={index}
+          className={`w-5 h-5 ${index < rating ? 'text-amber-500' : 'text-gray-300'}`}
+          fill={index < rating ? '#f59e0b' : 'none'}
+        />
+      ))}
+    </div>
+  );
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black bg-opacity-50 animate-fadeIn">
-      <div className="bg-white w-full max-w-md rounded-t-xl sm:rounded-xl shadow-xl overflow-hidden transform animate-slideUp">
-        <div className="flex justify-between items-center p-4 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-800">{name}</h2>
+  const detailPanel = (
+    <div 
+      className={`bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 ${
+        isMobile ? 'w-full max-w-md mx-auto' : 'w-96'
+      } ${isMinimized ? 'h-12' : 'max-h-[80vh]'}`}
+    >
+      <div 
+        className="flex items-center justify-between p-3 bg-amber-50 cursor-move"
+        style={{ touchAction: 'none' }}
+      >
+        <div className="flex items-center space-x-2">
+          <GripHorizontal className="w-4 h-4 text-amber-600" />
+          <h2 className="font-semibold text-amber-900 truncate">{name}</h2>
+        </div>
+        <div className="flex items-center space-x-1">
+          <button
+            onClick={() => setIsMinimized(!isMinimized)}
+            className="p-1 hover:bg-amber-100 rounded-full transition-colors"
+          >
+            {isMinimized ? (
+              <Plus className="w-4 h-4 text-amber-600" />
+            ) : (
+              <Minus className="w-4 h-4 text-amber-600" />
+            )}
+          </button>
           <button 
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-gray-200"
+            className="p-1 hover:bg-amber-100 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <X className="w-4 h-4 text-amber-600" />
           </button>
         </div>
-        
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-3">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
-              {type === 'both' ? 'Indoor & Outdoor' : type}
-            </span>
-            {renderPawRating()}
-          </div>
-          
-          {address && (
-            <div className="mb-3 text-gray-600">
-              <p>{address}</p>
-            </div>
-          )}
-          
-          {notes && (
-            <div className="mb-4">
-              <h3 className="text-sm font-medium text-gray-500 mb-1">Notes</h3>
-              <p className="text-gray-700">{notes}</p>
-            </div>
-          )}
+      </div>
 
-          {/* Private Notes Section */}
-          <div className="mb-4 border-t border-gray-200 pt-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Your private notes</h3>
-            {isEditingNote ? (
-              <div>
-                <textarea
-                  value={privateNote}
-                  onChange={(e) => setPrivateNote(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
-                  rows={4}
-                  placeholder="Add your personal notes about this location..."
-                />
-                <div className="flex justify-end space-x-2 mt-2">
-                  <button
-                    onClick={() => setIsEditingNote(false)}
-                    className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={savePrivateNote}
-                    className="px-3 py-1 bg-amber-500 text-white rounded hover:bg-amber-600"
-                  >
-                    Save Note
-                  </button>
-                </div>
+      {!isMinimized && (
+        <div className="overflow-y-auto max-h-[calc(80vh-3rem)]">
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-3">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
+                {type === 'both' ? 'Indoor & Outdoor' : type}
+              </span>
+              {renderPawRating()}
+            </div>
+            
+            {address && (
+              <div className="mb-3 text-gray-600">
+                <p>{address}</p>
               </div>
-            ) : (
-              <div 
-                onClick={() => setIsEditingNote(true)}
-                className="cursor-pointer group"
-              >
-                {privateNote ? (
-                  <p className="text-gray-700 p-2 rounded bg-gray-50 group-hover:bg-gray-100">
-                    {privateNote}
-                  </p>
-                ) : (
-                  <p className="text-gray-500 italic p-2 rounded bg-gray-50 group-hover:bg-gray-100">
-                    Click to add your private notes...
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-          
-          {yelpLink && (
-            <a 
-              href={yelpLink} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 mb-4"
-            >
-              <ExternalLink className="w-4 h-4" />
-              <span>View on Yelp</span>
-            </a>
-          )}
-          
-          <div className="flex flex-col space-y-2 mt-4">
-            {activePlan && (
-              <button
-                onClick={handleAddToPlan}
-                disabled={addedToPlan}
-                className={`flex items-center justify-center space-x-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  addedToPlan
-                    ? 'bg-green-500 text-white'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-              >
-                {addedToPlan ? (
-                  <>
-                    <span>Added to {activePlan.name}</span>
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4" />
-                    <span>Add to {activePlan.name}</span>
-                  </>
-                )}
-              </button>
             )}
             
-            <button
-              onClick={() => setShowReportForm(true)}
-              className="flex items-center justify-center space-x-1 px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-            >
-              <Flag className="w-4 h-4" />
-              <span>Report Issue</span>
-            </button>
+            {notes && (
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-gray-500 mb-1">Notes</h3>
+                <p className="text-gray-700">{notes}</p>
+              </div>
+            )}
+
+            <div className="mb-4 border-t border-gray-200 pt-4">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Your private notes</h3>
+              {isEditingNote ? (
+                <div>
+                  <textarea
+                    value={privateNote}
+                    onChange={(e) => setPrivateNote(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    rows={4}
+                    placeholder="Add your personal notes about this location..."
+                  />
+                  <div className="flex justify-end space-x-2 mt-2">
+                    <button
+                      onClick={() => setIsEditingNote(false)}
+                      className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={savePrivateNote}
+                      className="px-3 py-1 bg-amber-500 text-white rounded hover:bg-amber-600"
+                    >
+                      Save Note
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div 
+                  onClick={() => setIsEditingNote(true)}
+                  className="cursor-pointer group"
+                >
+                  {privateNote ? (
+                    <p className="text-gray-700 p-2 rounded bg-gray-50 group-hover:bg-gray-100">
+                      {privateNote}
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 italic p-2 rounded bg-gray-50 group-hover:bg-gray-100">
+                      Click to add your private notes...
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {yelpLink && (
+              <a 
+                href={yelpLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 mb-4"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>View on Yelp</span>
+              </a>
+            )}
+            
+            <div className="flex flex-col space-y-2">
+              {activePlan && (
+                <button
+                  onClick={handleAddToPlan}
+                  disabled={addedToPlan}
+                  className={`flex items-center justify-center space-x-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    addedToPlan
+                      ? 'bg-green-500 text-white'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
+                >
+                  {addedToPlan ? (
+                    <>
+                      <span>Added to {activePlan.name}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4" />
+                      <span>Add to {activePlan.name}</span>
+                    </>
+                  )}
+                </button>
+              )}
+              
+              <button
+                onClick={() => setShowReportForm(true)}
+                className="flex items-center justify-center space-x-1 px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+              >
+                <Flag className="w-4 h-4" />
+                <span>Report Issue</span>
+              </button>
+            </div>
           </div>
-          
+
           {showReportForm && (
-            <div className="mt-4 border-t border-gray-200 pt-4 animate-fadeIn">
+            <div className="p-4 border-t border-gray-200 animate-fadeIn">
               <h3 className="text-lg font-medium text-gray-800 mb-2">
                 Report an Issue
               </h3>
@@ -291,6 +326,29 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
             </div>
           )}
         </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="fixed inset-0 z-50 pointer-events-none">
+      <div className="w-full h-full flex items-end sm:items-center justify-center">
+        {isMobile ? (
+          <div className="pointer-events-auto w-full max-w-md animate-slideUp">
+            {detailPanel}
+          </div>
+        ) : (
+          <Draggable
+            handle=".cursor-move"
+            bounds="parent"
+            position={position}
+            onStop={(e, data) => setPosition({ x: data.x, y: data.y })}
+          >
+            <div className="pointer-events-auto">
+              {detailPanel}
+            </div>
+          </Draggable>
+        )}
       </div>
     </div>
   );
