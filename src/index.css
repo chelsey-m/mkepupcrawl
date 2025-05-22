@@ -74,6 +74,11 @@
 
 .leaflet-marker-icon {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.2s ease;
+}
+
+.leaflet-marker-icon:hover {
+  transform: scale(1.1);
 }
 
 /* Custom cluster styling */
@@ -159,4 +164,9 @@ button {
 .glass-panel {
   backdrop-filter: blur(8px);
   background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Scale transform utility */
+.scale-102 {
+  transform: scale(1.02);
 }

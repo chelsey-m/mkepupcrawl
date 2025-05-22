@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { Icon, LatLngTuple, DivIcon } from 'leaflet';
@@ -53,6 +53,22 @@ const createClusterIcon = (cluster: any) => {
   });
 };
 
+// Map controller component for handling location updates
+const MapController: React.FC<{ selectedLocation: Location | null }> = ({ selectedLocation }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (selectedLocation) {
+      map.flyTo(selectedLocation.coordinates, 16, {
+        duration: 1.5,
+        easeLinearity: 0.25
+      });
+    }
+  }, [map, selectedLocation]);
+  
+  return null;
+};
+
 const LocationFinder: React.FC = () => {
   const map = useMap();
   
@@ -96,16 +112,26 @@ const PawRating: React.FC<{ rating: number }> = React.memo(({ rating }) => {
 const LocationMarker: React.FC<{
   location: Location;
   onSelect: (id: string) => void;
-}> = React.memo(({ location, onSelect }) => {
+  isSelected: boolean;
+}> = React.memo(({ location, onSelect, isSelected }) => {
   const icon = useMemo(() => icons[location.type], [location.type]);
+  const markerRef = useRef(null);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();
     onSelect(location.id);
   }, [location.id, onSelect]);
+
+  useEffect(() => {
+    if (isSelected && markerRef.current) {
+      // @ts-ignore
+      markerRef.current.openPopup();
+    }
+  }, [isSelected]);
   
   return (
     <Marker 
+      ref={markerRef}
       position={location.coordinates}
       icon={icon}
       eventHandlers={{
@@ -134,7 +160,7 @@ const LocationMarker: React.FC<{
 });
 
 const MapView: React.FC = () => {
-  const { filteredLocations, selectLocation } = useLocations();
+  const { filteredLocations, selectLocation, selectedLocation } = useLocations();
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
 
   const handleLocationSelect = useCallback((id: string) => {
@@ -194,6 +220,7 @@ const MapView: React.FC = () => {
         />
         
         <LocationFinder />
+        <MapController selectedLocation={selectedLocation} />
         
         <MarkerClusterGroup
           chunkedLoading
@@ -209,6 +236,7 @@ const MapView: React.FC = () => {
               key={location.id}
               location={location}
               onSelect={handleLocationSelect}
+              isSelected={selectedLocation?.id === location.id}
             />
           ))}
         </MarkerClusterGroup>

@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocations } from '../context/LocationContext';
 import { ChevronRight, ChevronLeft, PawPrint } from 'lucide-react';
 
 const FilterOverlay: React.FC = () => {
   const { locations, selectLocation, selectedLocation } = useLocations();
   const [isExpanded, setIsExpanded] = useState(true);
+  const selectedRef = useRef<HTMLButtonElement>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    if (selectedLocation && selectedRef.current) {
+      selectedRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }, [selectedLocation]);
 
   return (
     <div 
@@ -31,10 +41,11 @@ const FilterOverlay: React.FC = () => {
             {locations.map(location => (
               <button
                 key={location.id}
+                ref={selectedLocation?.id === location.id ? selectedRef : null}
                 onClick={() => selectLocation(location.id)}
-                className={`w-full text-left p-3 rounded-lg transition-colors ${
+                className={`w-full text-left p-3 rounded-lg transition-all transform ${
                   selectedLocation?.id === location.id
-                    ? 'bg-amber-100'
+                    ? 'bg-amber-100 scale-102 shadow-sm'
                     : 'hover:bg-gray-100'
                 }`}
               >
@@ -59,7 +70,7 @@ const FilterOverlay: React.FC = () => {
         </div>
 
         {selectedLocation && (
-          <div className="w-1/2 border-l border-gray-200 p-4 overflow-y-auto">
+          <div className="w-1/2 border-l border-gray-200 p-4 overflow-y-auto animate-fadeIn">
             <h3 className="font-semibold mb-2">{selectedLocation.name}</h3>
             <p className="text-sm text-gray-600 mb-4">{selectedLocation.address}</p>
             {selectedLocation.notes && (
