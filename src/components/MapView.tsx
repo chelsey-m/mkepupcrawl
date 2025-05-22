@@ -12,50 +12,43 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-// Create icons with error handling
-const createIcon = (type: string): Icon => {
-  try {
-    return new Icon({
-      iconUrl: `/brewery-${type}.svg`,
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-      className: 'brewery-marker'
-    });
-  } catch (e) {
-    console.warn(`Failed to load icon for ${type}`);
-    return new Icon({
-      iconUrl: '/paw-icon.svg',
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32],
-      className: 'brewery-marker'
-    });
-  }
-};
+// Create custom marker icon with brewery initials
+const createBreweryIcon = (name: string): DivIcon => {
+  const initials = name
+    .split(' ')
+    .map(word => word[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
-const icons = {
-  indoor: createIcon('indoor'),
-  outdoor: createIcon('outdoor'),
-  both: createIcon('both')
+  return new DivIcon({
+    html: `
+      <div class="brewery-marker-container">
+        <div class="brewery-marker-icon">
+          <span class="brewery-marker-initials">${initials}</span>
+        </div>
+      </div>
+    `,
+    className: 'custom-brewery-marker',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40]
+  });
 };
 
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
+  const size = count < 10 ? 40 : count < 100 ? 45 : 50;
+  
   return new DivIcon({
     html: `
-      <div class="cluster-icon bg-amber-50 border-2 border-amber-500">
-        <span class="text-amber-700">${count}</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500">
-          <path d="M17 11h1a3 3 0 0 1 0 6h-1"></path>
-          <path d="M9 12v6"></path>
-          <path d="M13 12v6"></path>
-          <path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"></path>
-        </svg>
+      <div class="cluster-icon" style="width: ${size}px; height: ${size}px">
+        <span class="cluster-count">${count}</span>
+        <span class="cluster-beer">🍺</span>
       </div>
     `,
     className: 'custom-cluster-icon',
-    iconSize: [40, 40]
+    iconSize: [size, size]
   });
 };
 
@@ -116,7 +109,7 @@ const LocationMarker = React.memo(({
   isSelected: boolean;
 }) => {
   const markerRef = useRef(null);
-  const icon = useMemo(() => icons[location.type] || icons.both, [location.type]);
+  const icon = useMemo(() => createBreweryIcon(location.name), [location.name]);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();
@@ -204,7 +197,7 @@ const MapView: React.FC = () => {
   const memoizedMarkerClusterGroup = useMemo(() => (
     <MarkerClusterGroup
       chunkedLoading
-      maxClusterRadius={40}
+      maxClusterRadius={60}
       spiderfyOnMaxZoom={true}
       zoomToBoundsOnClick={true}
       showCoverageOnHover={false}
