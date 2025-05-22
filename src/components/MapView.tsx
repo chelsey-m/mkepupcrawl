@@ -154,6 +154,7 @@ const MapView: React.FC = () => {
   const [visibleLocations, setVisibleLocations] = useState(filteredLocations);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const handleViewportChange = useCallback((bounds: LatLngBounds) => {
     const visible = filteredLocations.filter(location => 
@@ -215,49 +216,54 @@ const MapView: React.FC = () => {
         tapTolerance={20}
         wheelDebounceTime={100}
         wheelPxPerZoomLevel={150}
+        whenReady={() => setMapLoaded(true)}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        
-        <ViewportManager onViewportChange={handleViewportChange} />
-        <MapController selectedLocation={selectedLocation} />
-        
-        <MarkerClusterGroup
-          chunkedLoading
-          maxClusterRadius={isMobile ? 60 : 40}
-          spiderfyOnMaxZoom={true}
-          zoomToBoundsOnClick={true}
-          showCoverageOnHover={false}
-          iconCreateFunction={createClusterIcon}
-          disableClusteringAtZoom={15}
-        >
-          {visibleLocations.map(location => (
-            <LocationMarker
-              key={location.id}
-              location={location}
-              onSelect={handleLocationSelect}
-              isSelected={selectedLocation?.id === location.id}
+        {mapLoaded && (
+          <>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-          ))}
-        </MarkerClusterGroup>
-        
-        {userLocation && (
-          <Marker 
-            position={userLocation}
-            icon={new Icon({
-              iconUrl: '/user-location.svg',
-              iconSize: [30, 30],
-              iconAnchor: [15, 15],
-            })}
-          >
-            <Popup>
-              <div className="text-center p-2">
-                <h3 className="font-bold">Your Location</h3>
-              </div>
-            </Popup>
-          </Marker>
+            
+            <ViewportManager onViewportChange={handleViewportChange} />
+            <MapController selectedLocation={selectedLocation} />
+            
+            <MarkerClusterGroup
+              chunkedLoading
+              maxClusterRadius={isMobile ? 60 : 40}
+              spiderfyOnMaxZoom={true}
+              zoomToBoundsOnClick={true}
+              showCoverageOnHover={false}
+              iconCreateFunction={createClusterIcon}
+              disableClusteringAtZoom={15}
+            >
+              {visibleLocations.map(location => (
+                <LocationMarker
+                  key={location.id}
+                  location={location}
+                  onSelect={handleLocationSelect}
+                  isSelected={selectedLocation?.id === location.id}
+                />
+              ))}
+            </MarkerClusterGroup>
+            
+            {userLocation && (
+              <Marker 
+                position={userLocation}
+                icon={new Icon({
+                  iconUrl: '/user-location.svg',
+                  iconSize: [30, 30],
+                  iconAnchor: [15, 15],
+                })}
+              >
+                <Popup>
+                  <div className="text-center p-2">
+                    <h3 className="font-bold">Your Location</h3>
+                  </div>
+                </Popup>
+              </Marker>
+            )}
+          </>
         )}
       </MapContainer>
       <FilterOverlay />
