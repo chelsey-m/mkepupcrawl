@@ -54,17 +54,21 @@ const createClusterIcon = (cluster: any) => {
   });
 };
 
-// Viewport manager for lazy loading
+// Optimized viewport manager with throttling
 const ViewportManager: React.FC<{
   onViewportChange: (bounds: LatLngBounds) => void
 }> = ({ onViewportChange }) => {
   const map = useMapEvents({
     moveend: debounce(() => {
-      onViewportChange(map.getBounds());
-    }, 100),
+      requestAnimationFrame(() => {
+        onViewportChange(map.getBounds());
+      });
+    }, 150),
     zoomend: debounce(() => {
-      onViewportChange(map.getBounds());
-    }, 100)
+      requestAnimationFrame(() => {
+        onViewportChange(map.getBounds());
+      });
+    }, 150)
   });
   return null;
 };
@@ -108,7 +112,7 @@ const LocationMarker = React.memo(({
   isSelected: boolean;
 }) => {
   const markerRef = useRef(null);
-  const icon = icons[location.type];
+  const icon = useMemo(() => icons[location.type], [location.type]);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();
@@ -151,22 +155,25 @@ const LocationMarker = React.memo(({
 const MapView: React.FC = () => {
   const { filteredLocations, selectLocation, selectedLocation } = useLocations();
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
-  const [visibleLocations, setVisibleLocations] = useState(filteredLocations);
+  const [visibleLocations, setVisibleLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const mapRef = useRef(null);
 
   const handleViewportChange = useCallback((bounds: LatLngBounds) => {
-    const visible = filteredLocations.filter(location => 
-      bounds.contains(location.coordinates)
-    );
-    setVisibleLocations(visible);
+    requestAnimationFrame(() => {
+      const visible = filteredLocations.filter(location => 
+        bounds.contains(location.coordinates)
+      );
+      setVisibleLocations(visible);
+    });
   }, [filteredLocations]);
 
   useEffect(() => {
     const handleResize = debounce(() => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    }, 100);
+    }, 150);
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -192,6 +199,27 @@ const MapView: React.FC = () => {
     selectLocation(id);
   }, [selectLocation]);
 
+  const memoizedMarkerClusterGroup = useMemo(() => (
+    <MarkerClusterGroup
+      chunkedLoading
+      maxClusterRadius={isMobile ? 60 : 40}
+      spiderfyOnMaxZoom={true}
+      zoomToBoundsOnClick={true}
+      showCoverageOnHover={false}
+      iconCreateFunction={createClusterIcon}
+      disableClusteringAtZoom={15}
+    >
+      {visibleLocations.map(location => (
+        <LocationMarker
+          key={location.id}
+          location={location}
+          onSelect={handleLocationSelect}
+          isSelected={selectedLocation?.id === location.id}
+        />
+      ))}
+    </MarkerClusterGroup>
+  ), [visibleLocations, handleLocationSelect, selectedLocation, isMobile]);
+
   if (isLoading) {
     return (
       <div className="h-full w-full flex items-center justify-center bg-gray-50">
@@ -206,6 +234,7 @@ const MapView: React.FC = () => {
   return (
     <div className="h-full w-full relative">
       <MapContainer 
+        ref={mapRef}
         center={userLocation || DEFAULT_CENTER} 
         zoom={DEFAULT_ZOOM} 
         className="h-full w-full"
@@ -214,7 +243,7 @@ const MapView: React.FC = () => {
         preferCanvas={true}
         tap={true}
         tapTolerance={20}
-        wheelDebounceTime={100}
+        wheelDebounceTime={150}
         wheelPxPerZoomLevel={150}
         whenReady={() => setMapLoaded(true)}
       >
@@ -228,24 +257,7 @@ const MapView: React.FC = () => {
             <ViewportManager onViewportChange={handleViewportChange} />
             <MapController selectedLocation={selectedLocation} />
             
-            <MarkerClusterGroup
-              chunkedLoading
-              maxClusterRadius={isMobile ? 60 : 40}
-              spiderfyOnMaxZoom={true}
-              zoomToBoundsOnClick={true}
-              showCoverageOnHover={false}
-              iconCreateFunction={createClusterIcon}
-              disableClusteringAtZoom={15}
-            >
-              {visibleLocations.map(location => (
-                <LocationMarker
-                  key={location.id}
-                  location={location}
-                  onSelect={handleLocationSelect}
-                  isSelected={selectedLocation?.id === location.id}
-                />
-              ))}
-            </MarkerClusterGroup>
+            {memoizedMarkerClusterGroup}
             
             {userLocation && (
               <Marker 
