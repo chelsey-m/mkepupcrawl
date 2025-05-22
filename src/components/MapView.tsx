@@ -15,9 +15,8 @@ const MOBILE_BREAKPOINT = 768;
 const createBreweryIcon = (): Icon => {
   return new Icon({
     iconUrl: '/brewery-icon.svg',
-    iconSize: [24, 24],
-    iconAnchor: [12, 24],
-    popupAnchor: [0, -24],
+    iconSize: [32, 32], // Increased touch target size
+    iconAnchor: [16, 32],
     className: 'brewery-marker'
   });
 };
@@ -86,11 +85,14 @@ const LocationMarker = React.memo(({
   const markerRef = useRef(null);
   const icon = useMemo(() => createBreweryIcon(), []);
   
-  const handleClick = useCallback((e: any) => {
-    if (e && typeof e.preventDefault === 'function') {
+  const handleMarkerClick = useCallback((e: any) => {
+    // Ensure event handling works on both desktop and mobile
+    if (e) {
+      if (e.originalEvent) {
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+      }
       e.preventDefault();
-    }
-    if (e && typeof e.stopPropagation === 'function') {
       e.stopPropagation();
     }
     onSelect(location.id);
@@ -102,7 +104,9 @@ const LocationMarker = React.memo(({
       position={location.coordinates}
       icon={icon}
       eventHandlers={{ 
-        click: handleClick
+        click: handleMarkerClick,
+        touchstart: handleMarkerClick,
+        touchend: handleMarkerClick
       }}
     />
   );
