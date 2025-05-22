@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { Icon, LatLngTuple, DivIcon, LatLngBounds } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
@@ -74,18 +74,6 @@ const MapController: React.FC<{
   return null;
 });
 
-const PawRating = React.memo(({ rating }: { rating: number }) => (
-  <div className="flex items-center mt-1">
-    {Array.from({ length: 4 }).map((_, index) => (
-      <PawPrint 
-        key={index}
-        className={`w-4 h-4 ${index < rating ? 'text-amber-500' : 'text-gray-300'}`}
-        fill={index < rating ? '#f59e0b' : 'none'}
-      />
-    ))}
-  </div>
-));
-
 const LocationMarker = React.memo(({ 
   location, 
   onSelect, 
@@ -97,7 +85,6 @@ const LocationMarker = React.memo(({
 }) => {
   const markerRef = useRef(null);
   const icon = useMemo(() => createBreweryIcon(), []);
-  const [isMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
   
   const handleClick = useCallback((e: any) => {
     e.preventDefault();
@@ -105,13 +92,6 @@ const LocationMarker = React.memo(({
     onSelect(location.id);
   }, [location.id, onSelect]);
 
-  useEffect(() => {
-    if (isSelected && markerRef.current) {
-      // @ts-ignore
-      markerRef.current.openPopup();
-    }
-  }, [isSelected]);
-  
   return (
     <Marker 
       ref={markerRef}
@@ -120,24 +100,7 @@ const LocationMarker = React.memo(({
       eventHandlers={{ 
         click: handleClick
       }}
-    >
-      <Popup className="leaflet-popup">
-        <div className="text-center p-2">
-          <h3 className="font-bold text-lg mb-1">{location.name}</h3>
-          <p className="text-sm capitalize mb-2">
-            {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
-          </p>
-          <PawRating rating={location.rating} />
-          <button 
-            className="mt-3 px-4 py-2 bg-amber-500 text-white text-sm rounded-full hover:bg-amber-600 transition-colors w-full touch-manipulation"
-            onClick={handleClick}
-            style={{ touchAction: 'manipulation' }}
-          >
-            View Details
-          </button>
-        </div>
-      </Popup>
-    </Marker>
+    />
   );
 });
 
@@ -243,13 +206,7 @@ const MapView: React.FC = () => {
               iconSize: [24, 24],
               iconAnchor: [12, 12],
             })}
-          >
-            <Popup>
-              <div className="text-center p-2">
-                <h3 className="font-bold">Your Location</h3>
-              </div>
-            </Popup>
-          </Marker>
+          />
         )}
       </MapContainer>
       <FilterOverlay />
