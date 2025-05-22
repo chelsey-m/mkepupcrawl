@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocations } from '../context/LocationContext';
-import { ChevronDown, PawPrint, GripHorizontal, Loader, Beer } from 'lucide-react';
+import { ChevronDown, PawPrint, GripHorizontal, Loader, SlidersHorizontal } from 'lucide-react';
 import Draggable from 'react-draggable';
 
 const FilterOverlay: React.FC = () => {
@@ -166,7 +166,7 @@ const FilterOverlay: React.FC = () => {
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <Beer className="w-4 h-4 text-amber-500" />
+                      <img src="/brewery-icon.svg" alt="Brewery" className="w-4 h-4" />
                       <span className="font-medium text-sm">{location.name}</span>
                     </div>
                     <div className="text-xs text-gray-500 capitalize flex items-center justify-between mt-1">
@@ -208,7 +208,7 @@ const FilterOverlay: React.FC = () => {
               isExpanded ? 'hidden' : ''
             }`}
           >
-            <Beer className="w-6 h-6" />
+            <SlidersHorizontal className="w-6 h-6" />
           </button>
           {filterPanel}
         </div>
@@ -219,7 +219,9 @@ const FilterOverlay: React.FC = () => {
           position={position}
           onStop={(e, data) => setPosition({ x: data.x, y: data.y })}
         >
-          {filterPanel}
+          <div className="pointer-events-auto">
+            {filterPanel}
+          </div>
         </Draggable>
       )}
     </div>

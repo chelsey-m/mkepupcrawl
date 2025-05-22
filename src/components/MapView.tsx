@@ -12,15 +12,9 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-const createBreweryIcon = (type: 'indoor' | 'outdoor' | 'both'): Icon => {
-  const iconUrl = type === 'both' 
-    ? '/brewery-both.svg'
-    : type === 'indoor' 
-      ? '/brewery-indoor.svg' 
-      : '/brewery-outdoor.svg';
-
+const createBreweryIcon = (): Icon => {
   return new Icon({
-    iconUrl,
+    iconUrl: '/brewery-icon.svg',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
@@ -36,7 +30,7 @@ const createClusterIcon = (cluster: any) => {
     html: `
       <div class="cluster-icon" style="width: ${size}px; height: ${size}px">
         <span class="cluster-count">${count}</span>
-        <img src="/brewery-both.svg" alt="Brewery cluster" />
+        <img src="/brewery-icon.svg" alt="Brewery cluster" />
       </div>
     `,
     className: 'custom-cluster-icon',
@@ -102,7 +96,7 @@ const LocationMarker = React.memo(({
   isSelected: boolean;
 }) => {
   const markerRef = useRef(null);
-  const icon = useMemo(() => createBreweryIcon(location.type), [location.type]);
+  const icon = useMemo(() => createBreweryIcon(), []);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();
