@@ -25,6 +25,7 @@ const createBreweryIcon = (name: string): DivIcon => {
     html: `
       <div class="brewery-marker-container">
         <div class="brewery-marker-icon">
+          <Beer class="w-4 h-4 text-white" />
           <span class="brewery-marker-initials">${initials}</span>
         </div>
       </div>
@@ -44,7 +45,7 @@ const createClusterIcon = (cluster: any) => {
     html: `
       <div class="cluster-icon" style="width: ${size}px; height: ${size}px">
         <span class="cluster-count">${count}</span>
-        <span class="cluster-beer">🍺</span>
+        <Beer class="w-4 h-4 text-white" />
       </div>
     `,
     className: 'custom-cluster-icon',
@@ -160,9 +161,11 @@ const MapView: React.FC = () => {
   const mapRef = useRef(null);
 
   const handleViewportChange = useCallback((bounds: LatLngBounds) => {
-    setVisibleLocations(
-      filteredLocations.filter(location => bounds.contains(location.coordinates))
-    );
+    if (filteredLocations.length > 0) {
+      setVisibleLocations(
+        filteredLocations.filter(location => bounds.contains(location.coordinates))
+      );
+    }
   }, [filteredLocations]);
 
   useEffect(() => {
@@ -195,33 +198,12 @@ const MapView: React.FC = () => {
     selectLocation(id);
   }, [selectLocation]);
 
-  const memoizedMarkerClusterGroup = useMemo(() => (
-    <MarkerClusterGroup
-      chunkedLoading
-      maxClusterRadius={50}
-      spiderfyOnMaxZoom={true}
-      zoomToBoundsOnClick={true}
-      showCoverageOnHover={false}
-      iconCreateFunction={createClusterIcon}
-      disableClusteringAtZoom={16}
-    >
-      {visibleLocations.map(location => (
-        <LocationMarker
-          key={location.id}
-          location={location}
-          onSelect={handleLocationSelect}
-          isSelected={selectedLocation?.id === location.id}
-        />
-      ))}
-    </MarkerClusterGroup>
-  ), [visibleLocations, handleLocationSelect, selectedLocation]);
-
-  if (isLoading) {
+  if (isLoading || filteredLocations.length === 0) {
     return (
       <div className="h-full w-full flex items-center justify-center bg-gray-50">
         <div className="flex items-center space-x-2">
           <Loader className="w-6 h-6 animate-spin text-amber-500" />
-          <span className="text-gray-600">Loading map...</span>
+          <span className="text-gray-600">Loading breweries...</span>
         </div>
       </div>
     );
@@ -247,7 +229,26 @@ const MapView: React.FC = () => {
         <ViewportManager onViewportChange={handleViewportChange} />
         <MapController selectedLocation={selectedLocation} />
         
-        {memoizedMarkerClusterGroup}
+        {mapLoaded && visibleLocations.length > 0 && (
+          <MarkerClusterGroup
+            chunkedLoading
+            maxClusterRadius={50}
+            spiderfyOnMaxZoom={true}
+            zoomToBoundsOnClick={true}
+            showCoverageOnHover={false}
+            iconCreateFunction={createClusterIcon}
+            disableClusteringAtZoom={16}
+          >
+            {visibleLocations.map(location => (
+              <LocationMarker
+                key={location.id}
+                location={location}
+                onSelect={handleLocationSelect}
+                isSelected={selectedLocation?.id === location.id}
+              />
+            ))}
+          </MarkerClusterGroup>
+        )}
         
         {userLocation && (
           <Marker 
