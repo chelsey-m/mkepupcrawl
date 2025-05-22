@@ -87,8 +87,12 @@ const LocationMarker = React.memo(({
   const icon = useMemo(() => createBreweryIcon(), []);
   
   const handleClick = useCallback((e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
     onSelect(location.id);
   }, [location.id, onSelect]);
 
