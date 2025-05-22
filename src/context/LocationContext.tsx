@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { Location, Plan, Filter } from '../types';
+import { breweries } from '../data/breweries';
 
 interface LocationContextType {
   locations: Location[];
@@ -9,6 +10,7 @@ interface LocationContextType {
   filter: Filter;
   plans: Plan[];
   activePlan: Plan | null;
+  isLoading: boolean;
   addLocation: (location: Omit<Location, 'id'>) => void;
   selectLocation: (locationId: string | null) => void;
   setFilter: (filter: Filter) => void;
@@ -47,19 +49,38 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     return savedPlans ? JSON.parse(savedPlans) : [];
   });
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load custom ratings on init
+  // Initialize locations with brewery data
   useEffect(() => {
-    const savedRatings = localStorage.getItem(RATINGS_KEY);
-    if (savedRatings) {
-      const customRatings = JSON.parse(savedRatings);
-      setLocations(prevLocations => 
-        prevLocations.map(location => ({
-          ...location,
-          rating: customRatings[location.id] || location.rating
-        }))
-      );
-    }
+    const initializeLocations = async () => {
+      setIsLoading(true);
+      try {
+        const initialLocations = breweries.map(brewery => ({
+          ...brewery,
+          id: nanoid()
+        }));
+
+        // Load custom ratings
+        const savedRatings = localStorage.getItem(RATINGS_KEY);
+        if (savedRatings) {
+          const customRatings = JSON.parse(savedRatings);
+          initialLocations.forEach(location => {
+            if (customRatings[location.id]) {
+              location.rating = customRatings[location.id];
+            }
+          });
+        }
+
+        setLocations(initialLocations);
+      } catch (error) {
+        console.error('Error initializing locations:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeLocations();
   }, []);
 
   // Save plans to localStorage whenever they change
@@ -83,19 +104,16 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   });
 
   const updateLocationRating = (locationId: string, rating: number) => {
-    // Update locations state
     setLocations(prevLocations =>
       prevLocations.map(location =>
         location.id === locationId ? { ...location, rating } : location
       )
     );
 
-    // Update selected location if it's the one being rated
     if (selectedLocation?.id === locationId) {
       setSelectedLocation(prev => prev ? { ...prev, rating } : null);
     }
 
-    // Save to localStorage
     const savedRatings = localStorage.getItem(RATINGS_KEY);
     const ratings = savedRatings ? JSON.parse(savedRatings) : {};
     ratings[locationId] = rating;
@@ -265,6 +283,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     filter,
     plans,
     activePlan,
+    isLoading,
     addLocation,
     selectLocation,
     setFilter,

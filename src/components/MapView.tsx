@@ -155,10 +155,9 @@ const LocationMarker = React.memo(({
 });
 
 const MapView: React.FC = () => {
-  const { filteredLocations, selectLocation, selectedLocation } = useLocations();
+  const { filteredLocations, selectLocation, selectedLocation, isLoading } = useLocations();
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
   const [visibleLocations, setVisibleLocations] = useState<Location[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
   const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef(null);
@@ -185,15 +184,11 @@ const MapView: React.FC = () => {
       navigator.geolocation.getCurrentPosition(
         position => {
           setUserLocation([position.coords.latitude, position.coords.longitude]);
-          setIsLoading(false);
         },
         () => {
-          setIsLoading(false);
-        },
-        { timeout: 5000 }
+          console.log('Geolocation not available');
+        }
       );
-    } else {
-      setIsLoading(false);
     }
   }, []);
 
@@ -201,7 +196,7 @@ const MapView: React.FC = () => {
     selectLocation(id);
   }, [selectLocation]);
 
-  if (isLoading || filteredLocations.length === 0) {
+  if (isLoading) {
     return (
       <div className="h-full w-full flex items-center justify-center bg-gray-50">
         <div className="flex items-center space-x-2">
