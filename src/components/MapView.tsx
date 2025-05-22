@@ -30,15 +30,15 @@ const createBreweryIcon = (name: string): DivIcon => {
       </div>
     `,
     className: 'custom-brewery-marker',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
   });
 };
 
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
-  const size = count < 10 ? 40 : count < 100 ? 45 : 50;
+  const size = Math.min(40 + Math.floor(count / 10) * 5, 60);
   
   return new DivIcon({
     html: `
@@ -48,7 +48,8 @@ const createClusterIcon = (cluster: any) => {
       </div>
     `,
     className: 'custom-cluster-icon',
-    iconSize: [size, size]
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
   });
 };
 
@@ -197,12 +198,12 @@ const MapView: React.FC = () => {
   const memoizedMarkerClusterGroup = useMemo(() => (
     <MarkerClusterGroup
       chunkedLoading
-      maxClusterRadius={60}
+      maxClusterRadius={50}
       spiderfyOnMaxZoom={true}
       zoomToBoundsOnClick={true}
       showCoverageOnHover={false}
       iconCreateFunction={createClusterIcon}
-      disableClusteringAtZoom={15}
+      disableClusteringAtZoom={16}
     >
       {visibleLocations.map(location => (
         <LocationMarker

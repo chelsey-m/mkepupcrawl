@@ -72,18 +72,6 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.brewery-marker {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  transition: transform 0.2s ease, filter 0.2s ease;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.brewery-marker:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-}
-
 /* Custom cluster styling */
 .custom-cluster-icon {
   background: transparent;
@@ -125,10 +113,10 @@
 }
 
 .brewery-marker-container {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   position: relative;
-  transform: translateY(-20px);
+  transform: translateY(-16px);
 }
 
 .brewery-marker-icon {
@@ -153,7 +141,7 @@
 .brewery-marker-initials {
   color: white;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 12px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
@@ -223,16 +211,18 @@ button {
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
-  .brewery-marker {
-    width: 32px !important;
-    height: 32px !important;
-    margin-left: -16px !important;
-    margin-top: -32px !important;
+  .brewery-marker-container {
+    width: 24px !important;
+    height: 24px !important;
+    transform: translateY(-12px);
   }
 
-  .custom-cluster-icon {
-    width: 40px;
-    height: 40px;
+  .brewery-marker-initials {
+    font-size: 10px;
+  }
+
+  .cluster-icon {
+    transform-origin: center;
   }
 }
 
