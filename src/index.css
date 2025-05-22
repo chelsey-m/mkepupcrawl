@@ -194,3 +194,8 @@ button {
     height: 48px;
   }
 }
+
+/* Prevent overscroll bounce */
+.overscroll-contain {
+  overscroll-behavior: contain;
+}

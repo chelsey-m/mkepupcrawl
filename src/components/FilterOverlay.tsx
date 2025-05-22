@@ -6,17 +6,24 @@ const FilterOverlay: React.FC = () => {
   const { locations, selectLocation, selectedLocation, filter, setFilter } = useLocations();
   const [isExpanded, setIsExpanded] = useState(true);
   const selectedRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
   useEffect(() => {
-    if (selectedLocation && selectedRef.current) {
-      selectedRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      });
+    if (selectedLocation && selectedRef.current && listRef.current) {
+      const listRect = listRef.current.getBoundingClientRect();
+      const elementRect = selectedRef.current.getBoundingClientRect();
+      
+      // Calculate if element is outside visible area
+      if (elementRect.top < listRect.top || elementRect.bottom > listRect.bottom) {
+        selectedRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        });
+      }
     }
   }, [selectedLocation]);
 
@@ -41,8 +48,8 @@ const FilterOverlay: React.FC = () => {
         {isExpanded ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
       </button>
 
-      <div className="w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex flex-col">
-        <div className="p-4 border-b border-gray-200">
+      <div className="w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex flex-col overflow-hidden">
+        <div className="flex-shrink-0 p-4 border-b border-gray-200">
           <h2 className="font-semibold text-lg mb-3">Filters</h2>
           <div className="space-y-2">
             <div>
@@ -76,37 +83,39 @@ const FilterOverlay: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 p-4 overflow-y-auto">
-          <h3 className="font-semibold mb-3">Breweries</h3>
-          <div className="space-y-2">
-            {locations.map(location => (
-              <button
-                key={location.id}
-                ref={selectedLocation?.id === location.id ? selectedRef : null}
-                onClick={() => selectLocation(location.id)}
-                className={`w-full text-left p-3 rounded-lg transition-all transform ${
-                  selectedLocation?.id === location.id
-                    ? 'bg-amber-100 scale-102 shadow-sm'
-                    : 'hover:bg-gray-100'
-                }`}
-              >
-                <div className="font-medium">{location.name}</div>
-                <div className="text-sm text-gray-600 capitalize">
-                  {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
-                </div>
-                <div className="flex mt-1">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <PawPrint
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < location.rating ? 'text-amber-500' : 'text-gray-300'
-                      }`}
-                      fill={i < location.rating ? '#f59e0b' : 'none'}
-                    />
-                  ))}
-                </div>
-              </button>
-            ))}
+        <div ref={listRef} className="flex-1 overflow-y-auto overscroll-contain">
+          <div className="p-4">
+            <h3 className="font-semibold mb-3">Breweries</h3>
+            <div className="space-y-2">
+              {locations.map(location => (
+                <button
+                  key={location.id}
+                  ref={selectedLocation?.id === location.id ? selectedRef : null}
+                  onClick={() => selectLocation(location.id)}
+                  className={`w-full text-left p-3 rounded-lg transition-all transform ${
+                    selectedLocation?.id === location.id
+                      ? 'bg-amber-100 scale-102 shadow-sm'
+                      : 'hover:bg-gray-100'
+                  }`}
+                >
+                  <div className="font-medium">{location.name}</div>
+                  <div className="text-sm text-gray-600 capitalize">
+                    {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
+                  </div>
+                  <div className="flex mt-1">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <PawPrint
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < location.rating ? 'text-amber-500' : 'text-gray-300'
+                        }`}
+                        fill={i < location.rating ? '#f59e0b' : 'none'}
+                      />
+                    ))}
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
