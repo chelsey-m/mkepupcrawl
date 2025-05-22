@@ -12,7 +12,7 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-const createBreweryIcon = (type: 'indoor' | 'outdoor' | 'both') => {
+const createBreweryIcon = (type: 'indoor' | 'outdoor' | 'both'): Icon => {
   const iconUrl = type === 'both' 
     ? '/brewery-both.svg'
     : type === 'indoor' 
@@ -36,6 +36,7 @@ const createClusterIcon = (cluster: any) => {
     html: `
       <div class="cluster-icon" style="width: ${size}px; height: ${size}px">
         <span class="cluster-count">${count}</span>
+        <img src="/brewery-both.svg" alt="Brewery cluster" />
       </div>
     `,
     className: 'custom-cluster-icon',
