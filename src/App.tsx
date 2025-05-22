@@ -10,14 +10,19 @@ const AppContent: React.FC = () => {
   const { selectedLocation, selectLocation, addLocation, activePlan } = useLocations();
 
   React.useEffect(() => {
-    // Add each brewery to the locations
+    // Add each brewery to the locations only if it hasn't been added yet
+    const addedBreweries = new Set();
+    
     breweries.forEach(brewery => {
-      addLocation({
-        ...brewery,
-        notes: `Dog-friendly ${brewery.type === 'both' ? 'indoor and outdoor' : 'outdoor only'} brewery.`
-      });
+      if (!addedBreweries.has(brewery.name)) {
+        addedBreweries.add(brewery.name);
+        addLocation({
+          ...brewery,
+          notes: `Dog-friendly ${brewery.type === 'both' ? 'indoor and outdoor' : 'outdoor only'} brewery.`
+        });
+      }
     });
-  }, [addLocation]);
+  }, []); // Only run once on mount
 
   return (
     <div className="flex flex-col h-screen">
