@@ -1,16 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocations } from '../context/LocationContext';
-import { ChevronRight, ChevronLeft, PawPrint } from 'lucide-react';
+import { ChevronRight, ChevronLeft, PawPrint, GripHorizontal } from 'lucide-react';
+import Draggable from 'react-draggable';
 
 const FilterOverlay: React.FC = () => {
   const { locations, selectLocation, selectedLocation, filter, setFilter } = useLocations();
   const [isExpanded, setIsExpanded] = useState(true);
   const selectedRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setPosition({ x: 0, y: 0 }); // Reset position on resize
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (selectedLocation && selectedRef.current && listRef.current) {
@@ -33,12 +46,10 @@ const FilterOverlay: React.FC = () => {
     });
   };
 
-  return (
-    <div 
-      className={`absolute top-4 right-4 bottom-4 flex transition-transform duration-300 z-[400] ${
-        isExpanded ? 'translate-x-0' : 'translate-x-[calc(100%-2rem)]'
-      }`}
-    >
+  const filterPanel = (
+    <div className={`flex transition-transform duration-300 ${
+      isExpanded ? 'translate-x-0' : 'translate-x-[calc(100%-2rem)]'
+    }`}>
       <button
         onClick={toggleExpand}
         className="h-8 -ml-8 px-2 bg-white rounded-l-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
@@ -48,8 +59,13 @@ const FilterOverlay: React.FC = () => {
       </button>
 
       <div className="w-[300px] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex flex-col overflow-hidden">
-        <div className="flex-shrink-0 p-3 border-b border-gray-200">
-          <h2 className="font-medium text-base mb-2">Filters</h2>
+        <div className="flex-shrink-0 p-3 border-b border-gray-200 cursor-move">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <GripHorizontal className="w-4 h-4 text-gray-400" />
+              <h2 className="font-medium text-base">Filters</h2>
+            </div>
+          </div>
           <div className="space-y-2">
             <div>
               <label className="text-xs font-medium text-gray-600 mb-1 block">
@@ -118,6 +134,23 @@ const FilterOverlay: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+
+  return (
+    <div className="absolute top-4 right-4 z-[400]">
+      {isMobile ? (
+        filterPanel
+      ) : (
+        <Draggable
+          handle=".cursor-move"
+          bounds="parent"
+          position={position}
+          onStop={(e, data) => setPosition({ x: data.x, y: data.y })}
+        >
+          {filterPanel}
+        </Draggable>
+      )}
     </div>
   );
 };

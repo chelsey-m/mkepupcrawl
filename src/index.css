@@ -225,3 +225,13 @@ button {
 .leaflet-bottom {
   z-index: 10;
 }
+
+/* Draggable filter panel */
+.cursor-move {
+  cursor: move;
+  cursor: grab;
+}
+
+.cursor-move:active {
+  cursor: grabbing;
+}
