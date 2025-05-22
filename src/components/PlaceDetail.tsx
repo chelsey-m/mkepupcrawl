@@ -11,7 +11,7 @@ interface PlaceDetailProps {
 const PRIVATE_NOTES_KEY = 'mkePupCrawl_privateNotes';
 
 const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
-  const { selectedLocation, addLocationToPlan, activePlan, sendReport } = useLocations();
+  const { selectedLocation, addLocationToPlan, activePlan, sendReport, updateLocationRating } = useLocations();
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportIssue, setReportIssue] = useState('');
   const [reportEmail, setReportEmail] = useState('');
@@ -108,14 +108,29 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
     }
   };
 
+  const handleRatingUpdate = (newRating: number) => {
+    updateLocationRating(selectedLocation.id, newRating);
+  };
+
   const renderPawRating = () => (
     <div className="flex items-center">
       {Array.from({ length: 4 }).map((_, index) => (
-        <PawPrint 
+        <button
           key={index}
-          className={`w-5 h-5 ${index < rating ? 'text-amber-500' : 'text-gray-300'}`}
-          fill={index < rating ? '#f59e0b' : 'none'}
-        />
+          onClick={() => handleRatingUpdate(index + 1)}
+          className="group relative"
+          title={`Rate ${index + 1} paws`}
+        >
+          <PawPrint 
+            className={`w-5 h-5 ${
+              index < rating ? 'text-amber-500' : 'text-gray-300'
+            } transition-colors hover:text-amber-400`}
+            fill={index < rating ? '#f59e0b' : 'none'}
+          />
+          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+            {index + 1} paws
+          </span>
+        </button>
       ))}
     </div>
   );

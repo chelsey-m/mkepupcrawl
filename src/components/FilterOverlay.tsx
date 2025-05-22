@@ -3,7 +3,7 @@ import { useLocations } from '../context/LocationContext';
 import { ChevronRight, ChevronLeft, PawPrint } from 'lucide-react';
 
 const FilterOverlay: React.FC = () => {
-  const { locations, selectLocation, selectedLocation } = useLocations();
+  const { locations, selectLocation, selectedLocation, filter, setFilter } = useLocations();
   const [isExpanded, setIsExpanded] = useState(true);
   const selectedRef = useRef<HTMLButtonElement>(null);
 
@@ -20,6 +20,13 @@ const FilterOverlay: React.FC = () => {
     }
   }, [selectedLocation]);
 
+  const handleRatingFilter = (rating: number) => {
+    setFilter({
+      ...filter,
+      minRating: filter.minRating === rating ? undefined : rating
+    });
+  };
+
   return (
     <div 
       className={`absolute top-4 right-4 bottom-4 flex transition-transform duration-300 z-[400] ${
@@ -34,10 +41,44 @@ const FilterOverlay: React.FC = () => {
         {isExpanded ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
       </button>
 
-      <div className="w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex">
-        <div className={`flex-1 p-4 ${selectedLocation ? 'w-1/2' : 'w-full'}`}>
-          <h2 className="font-semibold text-lg mb-4">Breweries</h2>
-          <div className="space-y-2 h-[calc(100%-2rem)] overflow-y-auto">
+      <div className="w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg flex flex-col">
+        <div className="p-4 border-b border-gray-200">
+          <h2 className="font-semibold text-lg mb-3">Filters</h2>
+          <div className="space-y-2">
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Minimum Rating
+              </label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4].map(rating => (
+                  <button
+                    key={rating}
+                    onClick={() => handleRatingFilter(rating)}
+                    className={`flex-1 p-2 rounded-md border transition-colors ${
+                      filter.minRating === rating
+                        ? 'bg-amber-100 border-amber-300'
+                        : 'border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex justify-center">
+                      {Array.from({ length: rating }).map((_, i) => (
+                        <PawPrint
+                          key={i}
+                          className="w-4 h-4 text-amber-500"
+                          fill="#f59e0b"
+                        />
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 p-4 overflow-y-auto">
+          <h3 className="font-semibold mb-3">Breweries</h3>
+          <div className="space-y-2">
             {locations.map(location => (
               <button
                 key={location.id}
@@ -68,28 +109,6 @@ const FilterOverlay: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {selectedLocation && (
-          <div className="w-1/2 border-l border-gray-200 p-4 overflow-y-auto animate-fadeIn">
-            <h3 className="font-semibold mb-2">{selectedLocation.name}</h3>
-            <p className="text-sm text-gray-600 mb-4">{selectedLocation.address}</p>
-            {selectedLocation.notes && (
-              <div className="prose prose-sm">
-                <p className="text-gray-700">{selectedLocation.notes}</p>
-              </div>
-            )}
-            {selectedLocation.yelpLink && (
-              <a
-                href={selectedLocation.yelpLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-4 text-sm text-blue-600 hover:text-blue-800"
-              >
-                View on Yelp →
-              </a>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ interface LocationContextType {
   generateShareCode: () => string;
   loadSharedPlan: (shareCode: string) => Plan | null;
   exportToGoogleMaps: () => string;
+  updateLocationRating: (locationId: string, rating: number) => void;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(undefined);
@@ -35,16 +36,31 @@ export const useLocations = () => {
 };
 
 const STORAGE_KEY = 'mkePupCrawl_plans';
+const RATINGS_KEY = 'mkePupCrawl_ratings';
 
 export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [filter, setFilter] = useState<Filter>({ type: 'all' });
+  const [filter, setFilter] = useState<Filter>({ type: 'all', minRating: 0 });
   const [plans, setPlans] = useState<Plan[]>(() => {
     const savedPlans = localStorage.getItem(STORAGE_KEY);
     return savedPlans ? JSON.parse(savedPlans) : [];
   });
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
+
+  // Load custom ratings on init
+  useEffect(() => {
+    const savedRatings = localStorage.getItem(RATINGS_KEY);
+    if (savedRatings) {
+      const customRatings = JSON.parse(savedRatings);
+      setLocations(prevLocations => 
+        prevLocations.map(location => ({
+          ...location,
+          rating: customRatings[location.id] || location.rating
+        }))
+      );
+    }
+  }, []);
 
   // Save plans to localStorage whenever they change
   useEffect(() => {
@@ -53,11 +69,38 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // Filter locations based on the selected filter
   const filteredLocations = locations.filter(location => {
-    if (filter.type === 'all') return true;
-    if (filter.type === 'indoor' && (location.type === 'indoor' || location.type === 'both')) return true;
-    if (filter.type === 'outdoor' && (location.type === 'outdoor' || location.type === 'both')) return true;
-    return false;
+    if (filter.type !== 'all' && filter.type !== location.type && 
+        !(filter.type === 'indoor' && location.type === 'both') && 
+        !(filter.type === 'outdoor' && location.type === 'both')) {
+      return false;
+    }
+    
+    if (filter.minRating && location.rating < filter.minRating) {
+      return false;
+    }
+    
+    return true;
   });
+
+  const updateLocationRating = (locationId: string, rating: number) => {
+    // Update locations state
+    setLocations(prevLocations =>
+      prevLocations.map(location =>
+        location.id === locationId ? { ...location, rating } : location
+      )
+    );
+
+    // Update selected location if it's the one being rated
+    if (selectedLocation?.id === locationId) {
+      setSelectedLocation(prev => prev ? { ...prev, rating } : null);
+    }
+
+    // Save to localStorage
+    const savedRatings = localStorage.getItem(RATINGS_KEY);
+    const ratings = savedRatings ? JSON.parse(savedRatings) : {};
+    ratings[locationId] = rating;
+    localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings));
+  };
 
   const addLocation = (location: Omit<Location, 'id'>) => {
     const newLocation = {
@@ -235,6 +278,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     generateShareCode,
     loadSharedPlan,
     exportToGoogleMaps,
+    updateLocationRating,
   };
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;

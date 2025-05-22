@@ -26,6 +26,7 @@ export interface Plan {
 // Filter type
 export interface Filter {
   type: 'all' | 'indoor' | 'outdoor';
+  minRating?: number;
 }
 
 // Report type for flagging issues
