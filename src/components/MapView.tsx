@@ -12,32 +12,37 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-// Updated icon paths and configuration
-const icons = {
-  indoor: new Icon({
-    iconUrl: '/brewery-indoor.svg',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-    className: 'brewery-marker'
-  }),
-  outdoor: new Icon({
-    iconUrl: '/brewery-outdoor.svg',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-    className: 'brewery-marker'
-  }),
-  both: new Icon({
-    iconUrl: '/brewery-both.svg',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-    className: 'brewery-marker'
-  })
+// Fallback icon in case SVG fails to load
+const fallbackIcon = new Icon({
+  iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTcgMTFoMWEzIDMgMCAwIDEgMCA2aC0xIiBzdHJva2U9IiNmNTllMGIiIHN0cm9rZS13aWR0aD0iMiIvPjxwYXRoIGQ9Ik05IDEydjYiIHN0cm9rZT0iI2Y1OWUwYiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTEzIDEydjYiIHN0cm9rZT0iI2Y1OWUwYiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTUgOHYxMmEyIDIgMCAwIDAgMiAyaDhhMiAyIDAgMCAwIDItMlY4IiBzdHJva2U9IiNmNTllMGIiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+  className: 'brewery-marker'
+});
+
+// Create icons with error handling
+const createIcon = (type: string): Icon => {
+  try {
+    return new Icon({
+      iconUrl: `/brewery-${type}.svg`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32],
+      className: 'brewery-marker'
+    });
+  } catch (e) {
+    console.warn(`Failed to load icon for ${type}, using fallback`);
+    return fallbackIcon;
+  }
 };
 
-// Updated cluster icon with Beer icon from Lucide
+const icons = {
+  indoor: createIcon('indoor'),
+  outdoor: createIcon('outdoor'),
+  both: createIcon('both')
+};
+
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
   return new DivIcon({
@@ -115,7 +120,7 @@ const LocationMarker = React.memo(({
   isSelected: boolean;
 }) => {
   const markerRef = useRef(null);
-  const icon = useMemo(() => icons[location.type], [location.type]);
+  const icon = useMemo(() => icons[location.type] || fallbackIcon, [location.type]);
   
   const handleClick = useCallback((e: any) => {
     e.originalEvent.stopPropagation();
@@ -240,7 +245,7 @@ const MapView: React.FC = () => {
         ref={mapRef}
         center={userLocation || DEFAULT_CENTER} 
         zoom={DEFAULT_ZOOM} 
-        className="h-full w-full"
+        className="h-full w-full z-0"
         zoomControl={!isMobile}
         attributionControl={true}
         preferCanvas={true}
