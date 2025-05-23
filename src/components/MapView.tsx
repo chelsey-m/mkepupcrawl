@@ -12,6 +12,13 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
+const breweryIcon = new Icon({
+  iconUrl: '/brewery-icon.svg',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
+
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
   const size = Math.min(44 + Math.floor(count / 10) * 2, 56);
@@ -64,6 +71,7 @@ const LocationMarker: React.FC<{
   return (
     <Marker
       position={location.coordinates}
+      icon={breweryIcon}
       eventHandlers={{
         click: () => onSelect(location.id)
       }}
@@ -77,7 +85,6 @@ const MapView: React.FC = () => {
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
   const [visibleLocations, setVisibleLocations] = useState<Location[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
-  const [mapLoaded, setMapLoaded] = useState(false);
   const mapRef = useRef(null);
 
   const handleViewportChange = useCallback((bounds: LatLngBounds) => {
