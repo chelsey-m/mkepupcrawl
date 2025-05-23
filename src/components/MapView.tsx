@@ -60,17 +60,25 @@ const LocationMarker: React.FC<{
   location: Location;
   onSelect: (id: string) => void;
   isSelected: boolean;
-}> = React.memo(({ location, onSelect, isSelected }) => {
+}> = ({ location, onSelect, isSelected }) => {
+  const icon = useMemo(() => new Icon({
+    iconUrl: '/brewery-icon.svg',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  }), []);
+
   return (
     <Marker
       position={location.coordinates}
+      icon={icon}
       eventHandlers={{
         click: () => onSelect(location.id)
       }}
       zIndexOffset={isSelected ? 2000 : 1000}
     />
   );
-});
+};
 
 const MapView: React.FC = () => {
   const { filteredLocations, selectLocation, selectedLocation, isLoading } = useLocations();
@@ -134,10 +142,8 @@ const MapView: React.FC = () => {
         className="h-full w-full"
         zoomControl={!isMobile}
         attributionControl={true}
-        preferCanvas={false}
-        whenReady={() => setMapLoaded(true)}
         tap={true}
-        tapTolerance={10}
+        tapTolerance={30}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
