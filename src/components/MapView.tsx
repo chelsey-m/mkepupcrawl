@@ -17,7 +17,9 @@ const createBreweryIcon = (): Icon => {
     iconUrl: '/brewery-icon.svg',
     iconSize: [44, 44],
     iconAnchor: [22, 44],
-    className: 'brewery-marker'
+    className: 'brewery-marker',
+    interactive: true,
+    tooltipAnchor: [0, -44]
   });
 };
 
@@ -90,7 +92,38 @@ const LocationMarker = React.memo(({
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
     }
-    onSelect(location.id);
+    requestAnimationFrame(() => {
+      onSelect(location.id);
+    });
+  }, [location.id, onSelect]);
+
+  useEffect(() => {
+    const marker = markerRef.current;
+    if (marker) {
+      const element = marker.getElement();
+      if (element) {
+        const handleTouch = (e: TouchEvent | MouseEvent) => {
+          e.preventDefault();
+          e.stopPropagation();
+          requestAnimationFrame(() => {
+            onSelect(location.id);
+          });
+        };
+
+        element.style.cursor = 'pointer';
+        element.style.touchAction = 'manipulation';
+        element.style.zIndex = '1000';
+        element.style.pointerEvents = 'auto';
+        
+        element.addEventListener('touchstart', handleTouch, { passive: false });
+        element.addEventListener('click', handleTouch, { passive: false });
+        
+        return () => {
+          element.removeEventListener('touchstart', handleTouch);
+          element.removeEventListener('click', handleTouch);
+        };
+      }
+    }
   }, [location.id, onSelect]);
 
   const eventHandlers = useMemo(() => ({
@@ -123,6 +156,7 @@ const LocationMarker = React.memo(({
       icon={icon}
       eventHandlers={eventHandlers}
       zIndexOffset={isSelected ? 2000 : 1000}
+      interactive={true}
     />
   );
 });
@@ -191,6 +225,8 @@ const MapView: React.FC = () => {
         attributionControl={true}
         preferCanvas={false}
         whenReady={() => setMapLoaded(true)}
+        tap={true}
+        tapTolerance={30}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
