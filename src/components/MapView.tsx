@@ -107,6 +107,12 @@ const LocationMarker = React.memo(({
         e.originalEvent.preventDefault();
         e.originalEvent.stopPropagation();
       }
+    },
+    touchcancel: (e: any) => {
+      if (e && e.originalEvent) {
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+      }
     }
   }), [handleMarkerClick]);
 
@@ -116,7 +122,7 @@ const LocationMarker = React.memo(({
       position={location.coordinates}
       icon={icon}
       eventHandlers={eventHandlers}
-      zIndexOffset={isSelected ? 1000 : 600}
+      zIndexOffset={isSelected ? 2000 : 1000}
     />
   );
 });
@@ -183,7 +189,7 @@ const MapView: React.FC = () => {
         className="h-full w-full"
         zoomControl={!isMobile}
         attributionControl={true}
-        preferCanvas={true}
+        preferCanvas={false}
         whenReady={() => setMapLoaded(true)}
       >
         <TileLayer

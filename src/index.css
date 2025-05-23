@@ -53,14 +53,15 @@
   z-index: 1;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 .leaflet-marker-pane {
-  z-index: 600;
+  z-index: 1000;
 }
 
 .leaflet-popup-pane {
-  z-index: 700;
+  z-index: 1100;
 }
 
 .leaflet-overlay-pane {
@@ -123,10 +124,11 @@
   width: 44px !important;
   height: 44px !important;
   cursor: pointer !important;
-  z-index: 600 !important;
+  z-index: 1000 !important;
   pointer-events: auto !important;
   touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
 }
 
 .brewery-marker img {
@@ -204,6 +206,8 @@ button {
     pointer-events: auto !important;
     touch-action: manipulation !important;
     -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    z-index: 1000 !important;
   }
 }
 
@@ -231,4 +235,7 @@ button {
   justify-content: center !important;
   pointer-events: auto !important;
   touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  z-index: 1000 !important;
 }
