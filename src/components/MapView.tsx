@@ -12,16 +12,14 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-const createBreweryIcon = (): Icon => {
-  return new Icon({
-    iconUrl: '/brewery-icon.svg',
-    iconSize: [44, 44],
-    iconAnchor: [22, 44],
-    className: 'brewery-marker',
-    interactive: true,
-    tooltipAnchor: [0, -44]
-  });
-};
+const createBreweryIcon = () => new Icon({
+  iconUrl: '/brewery-icon.svg',
+  iconSize: [44, 44],
+  iconAnchor: [22, 44],
+  popupAnchor: [0, -44],
+  className: 'brewery-marker',
+  interactive: true
+});
 
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
@@ -44,16 +42,8 @@ const ViewportManager: React.FC<{
   onViewportChange: (bounds: LatLngBounds) => void
 }> = ({ onViewportChange }) => {
   const map = useMapEvents({
-    moveend: () => {
-      requestAnimationFrame(() => {
-        onViewportChange(map.getBounds());
-      });
-    },
-    zoomend: () => {
-      requestAnimationFrame(() => {
-        onViewportChange(map.getBounds());
-      });
-    }
+    moveend: () => onViewportChange(map.getBounds()),
+    zoomend: () => onViewportChange(map.getBounds())
   });
   return null;
 };
@@ -75,86 +65,62 @@ const MapController: React.FC<{
   return null;
 });
 
-const LocationMarker = React.memo(({ 
-  location, 
-  onSelect, 
-  isSelected 
-}: {
+const LocationMarker: React.FC<{
   location: Location;
   onSelect: (id: string) => void;
   isSelected: boolean;
-}) => {
-  const markerRef = useRef(null);
+}> = React.memo(({ location, onSelect, isSelected }) => {
+  const markerRef = useRef<any>(null);
   const icon = useMemo(() => createBreweryIcon(), []);
-  
+
   const handleMarkerClick = useCallback((e: any) => {
-    if (e && e.originalEvent) {
+    if (e?.originalEvent) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
     }
-    requestAnimationFrame(() => {
-      onSelect(location.id);
-    });
+    requestAnimationFrame(() => onSelect(location.id));
   }, [location.id, onSelect]);
 
   useEffect(() => {
     const marker = markerRef.current;
-    if (marker) {
-      const element = marker.getElement();
-      if (element) {
-        const handleTouch = (e: TouchEvent | MouseEvent) => {
-          e.preventDefault();
-          e.stopPropagation();
-          requestAnimationFrame(() => {
-            onSelect(location.id);
-          });
-        };
+    if (!marker) return;
 
-        element.style.cursor = 'pointer';
-        element.style.touchAction = 'manipulation';
-        element.style.zIndex = '1000';
-        element.style.pointerEvents = 'auto';
-        
-        element.addEventListener('touchstart', handleTouch, { passive: false });
-        element.addEventListener('click', handleTouch, { passive: false });
-        
-        return () => {
-          element.removeEventListener('touchstart', handleTouch);
-          element.removeEventListener('click', handleTouch);
-        };
-      }
-    }
-  }, [location.id, onSelect]);
+    const element = marker.getElement();
+    if (!element) return;
 
-  const eventHandlers = useMemo(() => ({
-    click: handleMarkerClick,
-    touchstart: handleMarkerClick,
-    touchend: (e: any) => {
-      if (e && e.originalEvent) {
-        e.originalEvent.preventDefault();
-        e.originalEvent.stopPropagation();
-      }
-    },
-    touchmove: (e: any) => {
-      if (e && e.originalEvent) {
-        e.originalEvent.preventDefault();
-        e.originalEvent.stopPropagation();
-      }
-    },
-    touchcancel: (e: any) => {
-      if (e && e.originalEvent) {
-        e.originalEvent.preventDefault();
-        e.originalEvent.stopPropagation();
-      }
-    }
-  }), [handleMarkerClick]);
+    const handleInteraction = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      requestAnimationFrame(() => onSelect(location.id));
+    };
+
+    element.style.cursor = 'pointer';
+    element.style.touchAction = 'manipulation';
+    element.style.webkitTapHighlightColor = 'transparent';
+    element.style.webkitTouchCallout = 'none';
+    element.style.zIndex = isSelected ? '2000' : '1000';
+
+    element.addEventListener('click', handleInteraction, { passive: false });
+    element.addEventListener('touchstart', handleInteraction, { passive: false });
+
+    return () => {
+      element.removeEventListener('click', handleInteraction);
+      element.removeEventListener('touchstart', handleInteraction);
+    };
+  }, [location.id, onSelect, isSelected]);
 
   return (
-    <Marker 
+    <Marker
       ref={markerRef}
       position={location.coordinates}
       icon={icon}
-      eventHandlers={eventHandlers}
+      eventHandlers={{
+        click: handleMarkerClick,
+        touchstart: handleMarkerClick,
+        touchend: (e: any) => e?.originalEvent?.preventDefault(),
+        touchmove: (e: any) => e?.originalEvent?.preventDefault(),
+        touchcancel: (e: any) => e?.originalEvent?.preventDefault()
+      }}
       zIndexOffset={isSelected ? 2000 : 1000}
       interactive={true}
     />
