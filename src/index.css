@@ -51,26 +51,28 @@
   height: 100%;
   width: 100%;
   z-index: 1;
-  touch-action: pan-x pan-y;
+  touch-action: manipulation;
 }
 
-.leaflet-popup {
+.leaflet-marker-pane {
+  z-index: 600;
+}
+
+.leaflet-popup-pane {
+  z-index: 700;
+}
+
+.leaflet-overlay-pane {
+  z-index: 400;
+}
+
+.leaflet-shadow-pane {
+  z-index: 500;
+}
+
+.leaflet-top,
+.leaflet-bottom {
   z-index: 1000;
-}
-
-.leaflet-popup-content-wrapper {
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.leaflet-popup-content {
-  margin: 0;
-  min-width: 200px;
-}
-
-.leaflet-popup-tip-container {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 /* Custom cluster styling */
@@ -91,8 +93,8 @@
   transition: all 0.2s ease;
   cursor: pointer;
   font-weight: bold;
-  min-width: 32px;
-  min-height: 32px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 4px;
 }
 
@@ -117,11 +119,12 @@
 .brewery-marker {
   background: transparent !important;
   border: none !important;
-  width: 32px !important;
-  height: 32px !important;
+  width: 44px !important;
+  height: 44px !important;
   cursor: pointer !important;
-  z-index: 500 !important;
+  z-index: 600 !important;
   pointer-events: auto !important;
+  touch-action: manipulation !important;
 }
 
 .brewery-marker img {
@@ -129,6 +132,7 @@
   height: 100%;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
   transition: transform 0.2s ease;
+  pointer-events: auto;
 }
 
 .brewery-marker:hover img {
@@ -194,32 +198,6 @@ button {
   overscroll-behavior: contain;
 }
 
-/* Ensure proper z-index stacking */
-.leaflet-map-pane {
-  z-index: 1;
-}
-
-.leaflet-tile-pane {
-  z-index: 2;
-}
-
-.leaflet-overlay-pane {
-  z-index: 3;
-}
-
-.leaflet-marker-pane {
-  z-index: 4;
-}
-
-.leaflet-popup-pane {
-  z-index: 5;
-}
-
-.leaflet-top,
-.leaflet-bottom {
-  z-index: 10;
-}
-
 /* Draggable elements */
 .cursor-move {
   cursor: move;
@@ -238,4 +216,5 @@ button {
   align-items: center !important;
   justify-content: center !important;
   pointer-events: auto !important;
+  touch-action: manipulation !important;
 }

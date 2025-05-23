@@ -15,15 +15,15 @@ const MOBILE_BREAKPOINT = 768;
 const createBreweryIcon = (): Icon => {
   return new Icon({
     iconUrl: '/brewery-icon.svg',
-    iconSize: [32, 32], // Increased touch target size
-    iconAnchor: [16, 32],
+    iconSize: [44, 44],
+    iconAnchor: [22, 44],
     className: 'brewery-marker'
   });
 };
 
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
-  const size = Math.min(32 + Math.floor(count / 10) * 2, 48);
+  const size = Math.min(44 + Math.floor(count / 10) * 2, 56);
   
   return new DivIcon({
     html: `
@@ -86,28 +86,29 @@ const LocationMarker = React.memo(({
   const icon = useMemo(() => createBreweryIcon(), []);
   
   const handleMarkerClick = useCallback((e: any) => {
-    // Ensure event handling works on both desktop and mobile
-    if (e) {
-      if (e.originalEvent) {
-        e.originalEvent.preventDefault();
-        e.originalEvent.stopPropagation();
-      }
-      e.preventDefault();
-      e.stopPropagation();
+    if (e && e.originalEvent) {
+      e.originalEvent.preventDefault();
+      e.originalEvent.stopPropagation();
     }
     onSelect(location.id);
   }, [location.id, onSelect]);
+
+  const eventHandlers = useMemo(() => ({
+    click: handleMarkerClick,
+    touchstart: handleMarkerClick,
+    touchend: (e: any) => {
+      e.originalEvent.preventDefault();
+      e.originalEvent.stopPropagation();
+    }
+  }), [handleMarkerClick]);
 
   return (
     <Marker 
       ref={markerRef}
       position={location.coordinates}
       icon={icon}
-      eventHandlers={{ 
-        click: handleMarkerClick,
-        touchstart: handleMarkerClick,
-        touchend: handleMarkerClick
-      }}
+      eventHandlers={eventHandlers}
+      zIndexOffset={1000}
     />
   );
 });
