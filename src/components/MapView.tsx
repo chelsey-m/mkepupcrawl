@@ -97,8 +97,16 @@ const LocationMarker = React.memo(({
     click: handleMarkerClick,
     touchstart: handleMarkerClick,
     touchend: (e: any) => {
-      e.originalEvent.preventDefault();
-      e.originalEvent.stopPropagation();
+      if (e && e.originalEvent) {
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+      }
+    },
+    touchmove: (e: any) => {
+      if (e && e.originalEvent) {
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+      }
     }
   }), [handleMarkerClick]);
 
@@ -108,7 +116,7 @@ const LocationMarker = React.memo(({
       position={location.coordinates}
       icon={icon}
       eventHandlers={eventHandlers}
-      zIndexOffset={1000}
+      zIndexOffset={isSelected ? 1000 : 600}
     />
   );
 });
