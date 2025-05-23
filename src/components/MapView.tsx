@@ -61,21 +61,13 @@ const LocationMarker: React.FC<{
   onSelect: (id: string) => void;
   isSelected: boolean;
 }> = ({ location, onSelect, isSelected }) => {
-  const icon = useMemo(() => new Icon({
-    iconUrl: '/brewery-icon.svg',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-  }), []);
-
   return (
     <Marker
       position={location.coordinates}
-      icon={icon}
       eventHandlers={{
         click: () => onSelect(location.id)
       }}
-      zIndexOffset={isSelected ? 2000 : 1000}
+      zIndexOffset={isSelected ? 1100 : 1000}
     />
   );
 };
@@ -153,7 +145,7 @@ const MapView: React.FC = () => {
         <ViewportManager onViewportChange={handleViewportChange} />
         <MapController selectedLocation={selectedLocation} />
         
-        {mapLoaded && visibleLocations.length > 0 && (
+        {visibleLocations.length > 0 && (
           <MarkerClusterGroup
             chunkedLoading
             maxClusterRadius={50}
