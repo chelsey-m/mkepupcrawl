@@ -15,8 +15,7 @@ const MOBILE_BREAKPOINT = 768;
 const breweryIcon = new Icon({
   iconUrl: '/brewery-icon.svg',
   iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
+  iconAnchor: [16, 32]
 });
 
 const createClusterIcon = (cluster: any) => {
@@ -66,8 +65,7 @@ const MapController: React.FC<{
 const LocationMarker: React.FC<{
   location: Location;
   onSelect: (id: string) => void;
-  isSelected: boolean;
-}> = ({ location, onSelect, isSelected }) => {
+}> = ({ location, onSelect }) => {
   return (
     <Marker
       position={location.coordinates}
@@ -75,7 +73,6 @@ const LocationMarker: React.FC<{
       eventHandlers={{
         click: () => onSelect(location.id)
       }}
-      zIndexOffset={isSelected ? 1100 : 1000}
     />
   );
 };
@@ -142,7 +139,6 @@ const MapView: React.FC = () => {
         zoomControl={!isMobile}
         attributionControl={true}
         tap={true}
-        tapTolerance={30}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -152,26 +148,23 @@ const MapView: React.FC = () => {
         <ViewportManager onViewportChange={handleViewportChange} />
         <MapController selectedLocation={selectedLocation} />
         
-        {visibleLocations.length > 0 && (
-          <MarkerClusterGroup
-            chunkedLoading
-            maxClusterRadius={50}
-            spiderfyOnMaxZoom={true}
-            zoomToBoundsOnClick={true}
-            showCoverageOnHover={false}
-            iconCreateFunction={createClusterIcon}
-            disableClusteringAtZoom={16}
-          >
-            {visibleLocations.map(location => (
-              <LocationMarker
-                key={location.id}
-                location={location}
-                onSelect={handleLocationSelect}
-                isSelected={selectedLocation?.id === location.id}
-              />
-            ))}
-          </MarkerClusterGroup>
-        )}
+        <MarkerClusterGroup
+          chunkedLoading
+          maxClusterRadius={50}
+          spiderfyOnMaxZoom={true}
+          zoomToBoundsOnClick={true}
+          showCoverageOnHover={false}
+          iconCreateFunction={createClusterIcon}
+          disableClusteringAtZoom={16}
+        >
+          {visibleLocations.map(location => (
+            <LocationMarker
+              key={location.id}
+              location={location}
+              onSelect={handleLocationSelect}
+            />
+          ))}
+        </MarkerClusterGroup>
         
         {userLocation && (
           <Marker 
