@@ -14,11 +14,11 @@ const MOBILE_BREAKPOINT = 768;
 
 const createBreweryIcon = () => new Icon({
   iconUrl: '/brewery-icon.svg',
-  iconSize: [44, 44],
-  iconAnchor: [22, 44],
-  popupAnchor: [0, -44],
+  iconSize: [48, 48],
+  iconAnchor: [24, 48],
   className: 'brewery-marker',
-  interactive: true
+  interactive: true,
+  tooltipAnchor: [0, -48]
 });
 
 const createClusterIcon = (cluster: any) => {
@@ -72,14 +72,18 @@ const LocationMarker: React.FC<{
 }> = React.memo(({ location, onSelect, isSelected }) => {
   const markerRef = useRef<any>(null);
   const icon = useMemo(() => createBreweryIcon(), []);
+  const [isTouching, setIsTouching] = useState(false);
 
   const handleMarkerClick = useCallback((e: any) => {
     if (e?.originalEvent) {
       e.originalEvent.preventDefault();
       e.originalEvent.stopPropagation();
     }
-    requestAnimationFrame(() => onSelect(location.id));
-  }, [location.id, onSelect]);
+    
+    if (!isTouching) {
+      requestAnimationFrame(() => onSelect(location.id));
+    }
+  }, [location.id, onSelect, isTouching]);
 
   useEffect(() => {
     const marker = markerRef.current;
@@ -88,26 +92,35 @@ const LocationMarker: React.FC<{
     const element = marker.getElement();
     if (!element) return;
 
-    const handleInteraction = (e: Event) => {
+    const handleTouchStart = (e: TouchEvent) => {
       e.preventDefault();
       e.stopPropagation();
+      setIsTouching(true);
       requestAnimationFrame(() => onSelect(location.id));
     };
 
+    const handleTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsTouching(false);
+    };
+
     element.style.cursor = 'pointer';
-    element.style.touchAction = 'manipulation';
+    element.style.touchAction = 'none';
     element.style.webkitTapHighlightColor = 'transparent';
     element.style.webkitTouchCallout = 'none';
     element.style.zIndex = isSelected ? '2000' : '1000';
 
-    element.addEventListener('click', handleInteraction, { passive: false });
-    element.addEventListener('touchstart', handleInteraction, { passive: false });
+    element.addEventListener('touchstart', handleTouchStart, { passive: false });
+    element.addEventListener('touchend', handleTouchEnd, { passive: false });
+    element.addEventListener('click', handleMarkerClick, { passive: false });
 
     return () => {
-      element.removeEventListener('click', handleInteraction);
-      element.removeEventListener('touchstart', handleInteraction);
+      element.removeEventListener('touchstart', handleTouchStart);
+      element.removeEventListener('touchend', handleTouchEnd);
+      element.removeEventListener('click', handleMarkerClick);
     };
-  }, [location.id, onSelect, isSelected]);
+  }, [location.id, onSelect, isSelected, handleMarkerClick]);
 
   return (
     <Marker
@@ -116,7 +129,7 @@ const LocationMarker: React.FC<{
       icon={icon}
       eventHandlers={{
         click: handleMarkerClick,
-        touchstart: handleMarkerClick,
+        touchstart: (e: any) => e?.originalEvent?.preventDefault(),
         touchend: (e: any) => e?.originalEvent?.preventDefault(),
         touchmove: (e: any) => e?.originalEvent?.preventDefault(),
         touchcancel: (e: any) => e?.originalEvent?.preventDefault()
@@ -192,7 +205,8 @@ const MapView: React.FC = () => {
         preferCanvas={false}
         whenReady={() => setMapLoaded(true)}
         tap={true}
-        tapTolerance={30}
+        tapTolerance={15}
+        touchZoom={true}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
