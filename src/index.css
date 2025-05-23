@@ -51,7 +51,7 @@
   height: 100%;
   width: 100%;
   z-index: 1;
-  touch-action: manipulation;
+  touch-action: pan-x pan-y;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
 }
@@ -126,7 +126,7 @@
   cursor: pointer !important;
   z-index: 1000 !important;
   pointer-events: auto !important;
-  touch-action: none !important;
+  touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent !important;
   -webkit-touch-callout: none !important;
 }
@@ -137,7 +137,6 @@
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
   transition: transform 0.2s ease;
   pointer-events: auto;
-  touch-action: none;
 }
 
 .brewery-marker:hover img {
@@ -204,7 +203,7 @@ button {
     align-items: center !important;
     justify-content: center !important;
     pointer-events: auto !important;
-    touch-action: none !important;
+    touch-action: manipulation !important;
     -webkit-tap-highlight-color: transparent !important;
     -webkit-touch-callout: none !important;
     z-index: 1000 !important;
@@ -234,7 +233,7 @@ button {
   align-items: center !important;
   justify-content: center !important;
   pointer-events: auto !important;
-  touch-action: none !important;
+  touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent !important;
   -webkit-touch-callout: none !important;
   z-index: 1000 !important;
