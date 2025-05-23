@@ -12,14 +12,6 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-const breweryIcon = new Icon({
-  iconUrl: '/brewery-icon.svg',
-  iconSize: [48, 48],
-  iconAnchor: [24, 24],
-  popupAnchor: [0, -24],
-  className: 'brewery-marker'
-});
-
 const createClusterIcon = (cluster: any) => {
   const count = cluster.getChildCount();
   const size = Math.min(44 + Math.floor(count / 10) * 2, 56);
@@ -69,43 +61,13 @@ const LocationMarker: React.FC<{
   onSelect: (id: string) => void;
   isSelected: boolean;
 }> = React.memo(({ location, onSelect, isSelected }) => {
-  const markerRef = useRef<any>(null);
-
-  useEffect(() => {
-    const marker = markerRef.current;
-    if (!marker) return;
-
-    const element = marker.getElement();
-    if (!element) return;
-
-    const handleClick = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-      onSelect(location.id);
-    };
-
-    element.addEventListener('click', handleClick, { passive: false });
-    element.addEventListener('touchend', handleClick, { passive: false });
-
-    return () => {
-      element.removeEventListener('click', handleClick);
-      element.removeEventListener('touchend', handleClick);
-    };
-  }, [location.id, onSelect]);
-
   return (
     <Marker
-      ref={markerRef}
       position={location.coordinates}
-      icon={breweryIcon}
-      zIndexOffset={isSelected ? 2000 : 1000}
       eventHandlers={{
-        click: (e) => {
-          e.originalEvent?.preventDefault();
-          e.originalEvent?.stopPropagation();
-          onSelect(location.id);
-        }
+        click: () => onSelect(location.id)
       }}
+      zIndexOffset={isSelected ? 2000 : 1000}
     />
   );
 });
@@ -176,7 +138,6 @@ const MapView: React.FC = () => {
         whenReady={() => setMapLoaded(true)}
         tap={true}
         tapTolerance={10}
-        touchZoom={true}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

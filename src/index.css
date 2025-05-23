@@ -51,9 +51,6 @@
   height: 100%;
   width: 100%;
   z-index: 1;
-  touch-action: pan-x pan-y;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
 }
 
 .leaflet-marker-pane {
@@ -117,32 +114,6 @@
   margin-top: 2px;
 }
 
-/* Brewery marker styling */
-.brewery-marker {
-  background: transparent !important;
-  border: none !important;
-  width: 48px !important;
-  height: 48px !important;
-  cursor: pointer !important;
-  z-index: 1000 !important;
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
-  -webkit-tap-highlight-color: transparent !important;
-  -webkit-touch-callout: none !important;
-}
-
-.brewery-marker img {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
-  transition: transform 0.2s ease;
-  pointer-events: auto;
-}
-
-.brewery-marker:hover img {
-  transform: scale(1.1);
-}
-
 /* Typography improvements */
 body {
   @apply text-gray-800;
@@ -150,8 +121,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Outfit', sans-serif;
   letter-spacing: -0.01em;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -190,24 +159,6 @@ button {
   .leaflet-popup-content button {
     min-height: 44px;
   }
-
-  .brewery-marker {
-    min-width: 48px !important;
-    min-height: 48px !important;
-  }
-
-  .leaflet-marker-icon {
-    min-width: 48px !important;
-    min-height: 48px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    pointer-events: auto !important;
-    touch-action: manipulation !important;
-    -webkit-tap-highlight-color: transparent !important;
-    -webkit-touch-callout: none !important;
-    z-index: 1000 !important;
-  }
 }
 
 /* Prevent overscroll bounce */
@@ -223,18 +174,4 @@ button {
 
 .cursor-move:active {
   cursor: grabbing;
-}
-
-/* Touch target sizes */
-.leaflet-marker-icon {
-  min-width: 48px !important;
-  min-height: 48px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
-  -webkit-tap-highlight-color: transparent !important;
-  -webkit-touch-callout: none !important;
-  z-index: 1000 !important;
 }
