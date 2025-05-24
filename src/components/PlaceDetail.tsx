@@ -131,10 +131,6 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
     }
   };
 
-  const handleRatingUpdate = (newRating: number) => {
-    updateLocationRating(selectedLocation.id, newRating);
-  };
-
   const handleTypeChange = (newType: Location['type']) => {
     updateLocationType(selectedLocation.id, newType);
   };
@@ -164,27 +160,27 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
       <div className="flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
         <button
           onClick={() => handleTypeChange('indoor')}
-          className={`px-3 py-1 text-xs rounded-md transition-colors ${
-            type === 'indoor' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+          className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+            type === 'indoor' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          Indoor
+          Indoor Welcome
         </button>
         <button
           onClick={() => handleTypeChange('outdoor')}
-          className={`px-3 py-1 text-xs rounded-md transition-colors ${
-            type === 'outdoor' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+          className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+            type === 'outdoor' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          Outdoor
+          Patio Only
         </button>
         <button
           onClick={() => handleTypeChange('both')}
-          className={`px-3 py-1 text-xs rounded-md transition-colors ${
-            type === 'both' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+          className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+            type === 'both' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          Both
+          All Pup-Friendly
         </button>
       </div>
       <div className="relative">
