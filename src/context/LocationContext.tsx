@@ -132,12 +132,18 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const filteredLocations = locations.filter(location => {
-    if (filter.type !== 'all' && filter.type !== location.type && 
-        !(filter.type === 'indoor' && location.type === 'both') && 
-        !(filter.type === 'outdoor' && location.type === 'both')) {
-      return false;
+    // Handle Indoor/Outdoor filtering
+    if (filter.type === 'indoor') {
+      if (location.type !== 'indoor' && location.type !== 'both') {
+        return false;
+      }
+    } else if (filter.type === 'outdoor') {
+      if (location.type !== 'outdoor' && location.type !== 'both') {
+        return false;
+      }
     }
     
+    // Handle rating filter if active
     if (filter.minRating && location.rating < filter.minRating) {
       return false;
     }
