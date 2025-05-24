@@ -5,7 +5,6 @@ import { Icon, LatLngTuple, DivIcon, LatLngBounds } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
 import { Location } from '../types';
 import { Beer, PawPrint, Loader } from 'lucide-react';
-import BreweryList from './BreweryList';
 import debounce from 'lodash/debounce';
 
 const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
@@ -156,9 +155,8 @@ const MapView: React.FC = () => {
           />
         )}
       </MapContainer>
-      <BreweryList />
     </div>
   );
 };
 
-export default MapView
+export default MapView;
