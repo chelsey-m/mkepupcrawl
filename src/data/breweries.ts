@@ -160,5 +160,13 @@ export const breweries: Omit<Location, 'id'>[] = [
     yelpLink: "https://www.yelp.com/biz/torzala-brewing-company-milwaukee",
     address: "2018 S 1st St Suite 169, Milwaukee, WI 53207",
     rating: 4
+  },
+  {
+    name: "Dead Bird Brewing Company",
+    type: "outdoor",
+    coordinates: [43.0526, -87.9169],
+    yelpLink: "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee",
+    address: "1726 N 5th St, Milwaukee, WI 53212",
+    rating: 1
   }
 ];
