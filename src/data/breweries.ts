@@ -42,131 +42,131 @@ export const breweries: Omit<Location, 'id'>[] = [
     rating: 4
   },
   {
-    name: "Enlightened Brewing Co",
+    name: "Enlightened Brewing Company",
     type: "indoor",
     coordinates: [42.99598, -87.901493],
-    yelpLink: "https://enlightenedbeer.com/",
+    yelpLink: "https://www.yelp.com/biz/enlightened-brewing-company-milwaukee",
     address: "2020 S Allis St, Milwaukee, WI 53207",
     rating: 4
   },
   {
     name: "Amorphic Beer",
     type: "indoor",
-    coordinates: [43.0789, -87.9026],
-    yelpLink: "https://www.amorphicbeer.com/",
+    coordinates: [43.088182, -87.903224],
+    yelpLink: "https://www.yelp.com/biz/amorphic-beer-milwaukee",
     address: "3700 N Fratney St, Milwaukee, WI 53212",
     rating: 4
   },
   {
-    name: "Black Husky Brewing",
+    name: "Black Husky Brewing Co",
     type: "indoor",
-    coordinates: [43.0714, -87.8997],
-    yelpLink: "https://blackhuskybrewing.com/",
+    coordinates: [43.075317, -87.899681],
+    yelpLink: "https://www.yelp.com/biz/black-husky-brewing-milwaukee",
     address: "909 E Locust St, Milwaukee, WI 53212",
     rating: 4
   },
   {
     name: "Broken Bat Brewing Co",
     type: "indoor",
-    coordinates: [43.0241, -87.9066],
-    yelpLink: "https://brokenbatbrewery.com/",
+    coordinates: [43.024304, -87.910271],
+    yelpLink: "https://www.yelp.com/biz/broken-bat-brewing-company-milwaukee",
     address: "135 E Pittsburgh Ave, Milwaukee, WI 53204",
+    rating: 4
+  },
+  {
+    name: "Central Waters Brewing",
+    type: "outdoor",
+    coordinates: [43.043202, -87.926727],
+    yelpLink: "https://www.yelp.com/biz/central-waters-brewing-co-milwaukee",
+    address: "1037 W Juneau Ave, Milwaukee, WI 53233",
     rating: 4
   },
   {
     name: "Component Brewing",
     type: "indoor",
-    coordinates: [43.0178, -87.9129],
-    yelpLink: "https://www.facebook.com/ComponentBrewing/",
+    coordinates: [42.996046, -87.901694],
+    yelpLink: "https://www.yelp.com/biz/component-brewing-company-milwaukee",
     address: "2018 S 1st St #169, Milwaukee, WI 53207",
+    rating: 4
+  },
+  {
+    name: "Dead Bird Brewing Company",
+    type: "outdoor",
+    coordinates: [43.051095, -87.916613],
+    yelpLink: "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee",
+    address: "1726 N 5th St, Milwaukee, WI 53212",
+    rating: 4
+  },
+  {
+    name: "Eagle Park Brewing Co",
+    type: "both",
+    coordinates: [43.048799, -87.896087],
+    yelpLink: "https://www.yelp.com/biz/eagle-park-brewing-company-milwaukee",
+    address: "823 E Hamilton St, Milwaukee, WI 53202",
     rating: 4
   },
   {
     name: "Gathering Place Brewing",
     type: "indoor",
-    coordinates: [43.0784, -87.8947],
-    yelpLink: "https://www.gatheringplacebrewing.com/",
+    coordinates: [43.093029, -87.896363],
+    yelpLink: "https://www.yelp.com/biz/gathering-place-brewing-company-milwaukee",
     address: "811 E Vienna Ave, Milwaukee, WI 53212",
     rating: 4
   },
   {
-    name: "New Barons Brewing Co-op",
-    type: "indoor",
-    coordinates: [43.0178, -87.9129],
-    yelpLink: "https://newbaronsbrewing.com/",
-    address: "2018 S 1st St #170, Milwaukee, WI 53207",
-    rating: 4
-  },
-  {
-    name: "Third Space Brewing",
-    type: "outdoor",
-    coordinates: [43.0317, -87.9431],
-    yelpLink: "https://thirdspacebrewing.com/",
-    address: "1505 W St Paul Ave, Milwaukee, WI 53233",
-    rating: 4
-  },
-  {
-    name: "Eagle Park Brewing Co",
-    type: "outdoor",
-    coordinates: [43.0474, -87.8972],
-    yelpLink: "https://www.yelp.com/biz/eagle-park-brewing-milwaukee",
-    address: "823 E Hamilton St, Milwaukee, WI 53202",
-    rating: 4
-  },
-  {
-    name: "Lakefront Brewery",
-    type: "outdoor",
-    coordinates: [43.0533, -87.9054],
-    yelpLink: "https://lakefrontbrewery.com/",
-    address: "1872 N Commerce St, Milwaukee, WI 53212",
-    rating: 4
-  },
-  {
     name: "Good City Brewing Co",
-    type: "outdoor",
-    coordinates: [43.0600, -87.8876],
-    yelpLink: "https://www.goodcitybrewing.com/",
+    type: "both",
+    coordinates: [43.057252, -87.885015],
+    yelpLink: "https://www.yelp.com/biz/good-city-brewing-milwaukee",
     address: "2108 N Farwell Ave, Milwaukee, WI 53202",
     rating: 4
   },
   {
-    name: "Vennture Brew Co",
-    type: "both",
-    coordinates: [43.0606, -87.9816],
-    yelpLink: "https://www.yelp.com/biz/vennture-brew-company-milwaukee",
-    address: "5519 W North Ave, Milwaukee, WI 53208",
-    rating: 4
-  },
-  {
     name: "Hacienda Beer Co",
-    type: "outdoor",
-    coordinates: [43.0600, -87.8876],
-    yelpLink: "https://www.haciendabeerco.com/",
+    type: "indoor",
+    coordinates: [43.060586, -87.882462],
+    yelpLink: "https://www.yelp.com/biz/hacienda-beer-co-milwaukee",
     address: "2018 E North Ave, Milwaukee, WI 53202",
     rating: 4
   },
   {
     name: "Indeed Brewing Company",
     type: "outdoor",
-    coordinates: [43.0179, -87.9108],
+    coordinates: [43.025303, -87.913546],
     yelpLink: "https://www.yelp.com/biz/indeed-brewing-company-milwaukee",
     address: "530 S 2nd St, Milwaukee, WI 53204",
     rating: 4
   },
   {
-    name: "Dead Bird Brewing Company",
-    type: "outdoor",
-    coordinates: [43.0526, -87.9169],
-    yelpLink: "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee",
-    address: "1726 N 5th St, Milwaukee, WI 53212",
+    name: "Lakefront Brewery",
+    type: "both",
+    coordinates: [43.052014, -87.900291],
+    yelpLink: "https://www.yelp.com/biz/lakefront-brewery-milwaukee",
+    address: "1872 N Commerce St, Milwaukee, WI 53212",
     rating: 4
   },
   {
-    name: "Central Waters Brewing",
+    name: "New Barons Brewing Co-op",
+    type: "indoor",
+    coordinates: [42.996106, -87.901731],
+    yelpLink: "https://www.yelp.com/biz/new-barons-brewing-cooperative-milwaukee",
+    address: "2018 S 1st St #170, Milwaukee, WI 53207",
+    rating: 4
+  },
+  {
+    name: "Third Space Brewing",
     type: "outdoor",
-    coordinates: [43.0451, -87.9226],
-    yelpLink: "https://www.yelp.com/biz/central-waters-brewing-co-milwaukee",
-    address: "1037 W Juneau Ave, Milwaukee, WI 53233",
+    coordinates: [43.033351, -87.930983],
+    yelpLink: "https://www.yelp.com/biz/third-space-brewing-milwaukee",
+    address: "1505 W St Paul Ave, Milwaukee, WI 53233",
+    rating: 4
+  },
+  {
+    name: "Venture Brew Co",
+    type: "both",
+    coordinates: [43.061031, -87.987584],
+    yelpLink: "https://www.yelp.com/biz/venture-brew-co-milwaukee",
+    address: "5519 W North Ave, Milwaukee, WI 53210",
     rating: 4
   }
 ];
