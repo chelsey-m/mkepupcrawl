@@ -42,6 +42,7 @@ const STORAGE_KEY = 'mkePupCrawl_plans';
 const RATINGS_KEY = 'mkePupCrawl_ratings';
 const TYPES_KEY = 'mkePupCrawl_types';
 const FILTERS_KEY = 'mkePupCrawl_filters';
+const NOTES_KEY = 'mkePupCrawl_notes';
 
 export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -75,7 +76,11 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         const initialLocations = Array.from(uniqueBreweries.values());
 
+        // Load saved data
         const savedRatings = localStorage.getItem(RATINGS_KEY);
+        const savedTypes = localStorage.getItem(TYPES_KEY);
+        const savedNotes = localStorage.getItem(NOTES_KEY);
+
         if (savedRatings) {
           const customRatings = JSON.parse(savedRatings);
           initialLocations.forEach(location => {
@@ -85,12 +90,20 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
           });
         }
 
-        const savedTypes = localStorage.getItem(TYPES_KEY);
         if (savedTypes) {
           const customTypes = JSON.parse(savedTypes);
           initialLocations.forEach(location => {
             if (customTypes[location.id]) {
               location.type = customTypes[location.id];
+            }
+          });
+        }
+
+        if (savedNotes) {
+          const customNotes = JSON.parse(savedNotes);
+          initialLocations.forEach(location => {
+            if (customNotes[location.id]) {
+              location.notes = customNotes[location.id];
             }
           });
         }
@@ -132,7 +145,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const filteredLocations = locations.filter(location => {
-    // Handle Indoor/Outdoor filtering
     if (filter.type === 'indoor') {
       if (location.type !== 'indoor' && location.type !== 'both') {
         return false;
@@ -143,7 +155,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
       }
     }
     
-    // Handle rating filter if active
     if (filter.minRating && location.rating < filter.minRating) {
       return false;
     }
