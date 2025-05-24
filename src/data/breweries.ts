@@ -138,9 +138,9 @@ export const breweries: Omit<Location, 'id'>[] = [
     rating: 4
   },
   {
-    name: "Milwaukee Brewing Company (Bay View Taproom)",
+    name: "Milwaukee Brewing Company",
     type: "both",
-    coordinates: [43.0162, -87.8967],
+    coordinates: [42.997142, -87.904026],
     yelpLink: "https://www.yelp.com/biz/milwaukee-brewing-company-milwaukee-2",
     address: "2335 S Kinnickinnic Ave, Milwaukee, WI 53207",
     rating: 4
