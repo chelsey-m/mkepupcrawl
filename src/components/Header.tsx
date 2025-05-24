@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SlidersHorizontal, Beer, List, MapPin, PawPrint } from 'lucide-react';
+import { SlidersHorizontal, Beer, List, MapPin, PawPrint, X } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
 
 const Header: React.FC = () => {
@@ -40,8 +40,14 @@ const Header: React.FC = () => {
     setShowBreweries(false);
   };
 
+  const handleClickOutside = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setShowBreweries(false);
+    }
+  };
+
   return (
-    <header className="bg-white shadow-md">
+    <header className="bg-white shadow-md relative z-50">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center space-x-2">
           <Beer className="w-8 h-8 text-amber-600" />
@@ -120,20 +126,34 @@ const Header: React.FC = () => {
 
       {/* Breweries dropdown */}
       {showBreweries && (
-        <div className="border-t border-gray-200 p-3 bg-white shadow-lg animate-fadeDown">
-          <div className="max-h-[60vh] overflow-y-auto">
-            <div className="space-y-2">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-10 z-40"
+          onClick={handleClickOutside}
+        >
+          <div className={`absolute right-4 mt-2 w-80 max-h-[50vh] bg-white rounded-lg shadow-xl overflow-hidden sm:right-[6.5rem] ${
+            showBreweries ? 'animate-fadeDown' : ''
+          }`}>
+            <div className="flex items-center justify-between p-3 border-b border-gray-100">
+              <h3 className="font-medium text-gray-700">Breweries on Map ({filteredLocations.length})</h3>
+              <button
+                onClick={() => setShowBreweries(false)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+            <div className="overflow-y-auto" style={{ maxHeight: 'calc(50vh - 3rem)' }}>
               {filteredLocations.map(brewery => (
                 <button
                   key={brewery.id}
                   onClick={() => handleBrewerySelect(brewery.id)}
-                  className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors border border-gray-200"
+                  className="w-full text-left p-2 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0"
                 >
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-amber-600" />
-                    <span className="font-medium text-gray-900">{brewery.name}</span>
+                    <MapPin className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    <span className="font-medium text-gray-900 truncate">{brewery.name}</span>
                   </div>
-                  <div className="mt-1 flex items-center justify-between">
+                  <div className="mt-0.5 flex items-center justify-between pl-6">
                     <span className="text-xs text-gray-600 capitalize">
                       {brewery.type === 'both' ? 'Indoor & Outdoor' : brewery.type}
                     </span>
