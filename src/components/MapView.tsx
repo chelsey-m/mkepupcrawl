@@ -122,9 +122,11 @@ const MapView: React.FC = () => {
         className="h-full w-full"
         zoomControl={!isMobile}
         attributionControl={true}
+        dragging={true}
+        touchZoom={true}
         tap={true}
-        touchZoom={false}
-        style={{ touchAction: 'none' }}
+        doubleClickZoom={true}
+        scrollWheelZoom={true}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
