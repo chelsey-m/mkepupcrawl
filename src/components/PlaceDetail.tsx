@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, ExternalLink, Flag, PawPrint, Plus, Minus, GripHorizontal, ChevronRight } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
 import { PrivateNote } from '../types';
@@ -23,6 +23,8 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isDragging, setIsDragging] = useState(false);
+  const startY = useRef(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,6 +50,25 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
       }
     }
   }, [selectedLocation]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY.current;
+
+    if (diff > 50 && !isDragging) {
+      onClose();
+    }
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   const savePrivateNote = () => {
     if (!selectedLocation) return;
@@ -138,6 +159,8 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
       className={`bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 ${
         isMobile ? 'w-full max-w-md mx-auto' : 'w-72'
       } ${isMinimized ? 'h-12' : 'max-h-[80vh]'}`}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
     >
       <div 
         className="flex items-center justify-between p-2 bg-amber-50 cursor-move"
@@ -357,24 +380,29 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   );
 
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none">
-      <div className="w-full h-full flex items-end sm:items-center justify-center">
-        {isMobile ? (
-          <div className="pointer-events-auto w-full max-w-md animate-slideUp">
-            {detailPanel}
-          </div>
-        ) : (
-          <Draggable
-            handle=".cursor-move"
-            bounds="parent"
-            position={position}
-            onStop={(e, data) => setPosition({ x: data.x, y: data.y })}
-          >
-            <div className="pointer-events-auto">
+    <div 
+      className="fixed inset-0 z-50 bg-black bg-opacity-25"
+      onClick={handleBackdropClick}
+    >
+      <div className="w-full h-full flex items-end sm:items-center justify-center pointer-events-none">
+        <div className="pointer-events-auto">
+          {isMobile ? (
+            detailPanel
+          ) : (
+            <Draggable
+              handle=".cursor-move"
+              bounds="parent"
+              position={position}
+              onStart={() => setIsDragging(true)}
+              onStop={(e, data) => {
+                setPosition({ x: data.x, y: data.y });
+                setIsDragging(false);
+              }}
+            >
               {detailPanel}
-            </div>
-          </Draggable>
-        )}
+            </Draggable>
+          )}
+        </div>
       </div>
     </div>
   );
