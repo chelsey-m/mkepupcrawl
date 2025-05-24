@@ -48,7 +48,7 @@ const FilterOverlay: React.FC = () => {
 
   const sidebarContent = (
     <>
-      <div className="p-4 border-b border-gray-200 bg-white">
+      <div className="p-4 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
         <h2 className="font-semibold text-gray-800 mb-3">Filter by Rating</h2>
         <div className="flex gap-1">
           {[1, 2, 3, 4].map(rating => (
@@ -75,7 +75,7 @@ const FilterOverlay: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-4 bg-white">
+      <div className="p-4 bg-white/95 backdrop-blur-sm">
         <h2 className="font-semibold text-gray-800 mb-3">
           Breweries on Map ({locations.length})
         </h2>
@@ -99,7 +99,7 @@ const FilterOverlay: React.FC = () => {
               className={`w-full text-left p-3 rounded-lg transition-all ${
                 selectedLocation?.id === location.id
                   ? 'bg-amber-100'
-                  : 'bg-gray-50 hover:bg-gray-100'
+                  : 'hover:bg-gray-100 border border-gray-200'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -170,8 +170,10 @@ const FilterOverlay: React.FC = () => {
   }
 
   return (
-    <div className="fixed top-[4.5rem] right-0 w-[300px] h-[calc(100vh-4.5rem)] bg-white shadow-lg z-40 overflow-hidden">
-      {sidebarContent}
+    <div className="fixed top-0 right-0 w-[300px] h-screen bg-white/95 backdrop-blur-sm shadow-lg z-40 overflow-hidden">
+      <div className="h-full pt-[4.5rem]">
+        {sidebarContent}
+      </div>
     </div>
   );
 };
