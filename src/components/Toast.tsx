@@ -34,3 +34,5 @@ const Toast: React.FC<ToastProps> = ({ message, action, onDismiss }) => {
     </div>
   );
 };
+
+export default Toast
