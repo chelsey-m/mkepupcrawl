@@ -112,5 +112,13 @@ export const breweries: Omit<Location, 'id'>[] = [
     yelpLink: "https://www.haciendabeerco.com/",
     address: "2018 E North Ave, Milwaukee, WI",
     rating: 4
+  },
+  {
+    name: "Indeed Brewing Company",
+    type: "outdoor",
+    coordinates: [43.0179, -87.9108],
+    yelpLink: "https://www.yelp.com/biz/indeed-brewing-company-milwaukee",
+    address: "530 S 2nd St, Milwaukee, WI 53204",
+    rating: 4
   }
 ];
