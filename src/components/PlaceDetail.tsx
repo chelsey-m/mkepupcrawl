@@ -138,7 +138,7 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
 
   const renderPawRating = () => (
     <div className="flex items-center gap-2">
-      <div className="flex">
+      <div className="flex flex-shrink-0">
         {[1, 2, 3, 4].map((pawRating) => (
           <button
             key={pawRating}
@@ -155,7 +155,7 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
           </button>
         ))}
       </div>
-      <div className="relative">
+      <div className="relative flex-shrink-0">
         <button
           onMouseEnter={() => setShowRatingTooltip(true)}
           onMouseLeave={() => setShowRatingTooltip(false)}
@@ -173,11 +173,11 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   );
 
   const renderTypeSelector = () => (
-    <div className="flex items-center gap-2 mb-2">
-      <div className="flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
+    <div className="flex items-center gap-2">
+      <div className="flex flex-wrap gap-1 rounded-lg border border-gray-200 p-0.5 bg-gray-50">
         <button
           onClick={() => handleTypeChange('indoor')}
-          className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+          className={`px-2 py-1 text-xs rounded-md transition-colors ${
             type === 'indoor' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
@@ -185,7 +185,7 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
         </button>
         <button
           onClick={() => handleTypeChange('outdoor')}
-          className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+          className={`px-2 py-1 text-xs rounded-md transition-colors ${
             type === 'outdoor' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
@@ -193,14 +193,14 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
         </button>
         <button
           onClick={() => handleTypeChange('both')}
-          className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
+          className={`px-2 py-1 text-xs rounded-md transition-colors ${
             type === 'both' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
           All Pup-Friendly
         </button>
       </div>
-      <div className="relative">
+      <div className="relative flex-shrink-0">
         <button
           onMouseEnter={() => setShowTypeTooltip(true)}
           onMouseLeave={() => setShowTypeTooltip(false)}
@@ -256,24 +256,24 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
       {!isMinimized && (
         <div className="overflow-y-auto max-h-[calc(80vh-3rem)]">
           <div className="p-3">
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex flex-col gap-3">
               {renderTypeSelector()}
               {renderPawRating()}
             </div>
             
             {address && (
-              <div className="mb-2 text-gray-600 text-sm">
+              <div className="mt-3 text-gray-600 text-sm">
                 <p>{address}</p>
               </div>
             )}
             
             {notes && (
-              <div className="mb-3">
+              <div className="mt-3">
                 <p className="text-sm text-gray-700">{notes}</p>
               </div>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-2 mt-4">
               <div 
                 className="relative"
                 onClick={() => !isEditingNote && setIsExpanded(!isExpanded)}
