@@ -36,7 +36,7 @@ export const breweries: Omit<Location, 'id'>[] = [
   {
     name: "Enlightened Brewing Co",
     type: "indoor",
-    coordinates: [43.0169, -87.9129],
+    coordinates: [42.995980, -87.901493],
     yelpLink: "https://enlightenedbeer.com/",
     address: "2020 S Allis St, Milwaukee, WI 53207",
     rating: 4
@@ -116,7 +116,7 @@ export const breweries: Omit<Location, 'id'>[] = [
   {
     name: "1840 Brewing Company",
     type: "outdoor",
-    coordinates: [43.0179, -87.9065],
+    coordinates: [42.994653, -87.899987],
     yelpLink: "https://www.yelp.com/biz/1840-brewing-company-milwaukee",
     address: "342 E Ward St, Milwaukee, WI 53207",
     rating: 4
@@ -124,7 +124,7 @@ export const breweries: Omit<Location, 'id'>[] = [
   {
     name: "Burnhearts",
     type: "outdoor",
-    coordinates: [43.0169, -87.9065],
+    coordinates: [42.998591, -87.903309],
     yelpLink: "https://www.yelp.com/biz/burnhearts-milwaukee",
     address: "2599 S Logan Ave, Milwaukee, WI 53207",
     rating: 4
@@ -148,9 +148,9 @@ export const breweries: Omit<Location, 'id'>[] = [
   {
     name: "Torzala Brewing Company",
     type: "indoor",
-    coordinates: [43.0178, -87.9129],
+    coordinates: [42.996128, -87.901768],
     yelpLink: "https://www.yelp.com/biz/torzala-brewing-company-milwaukee",
-    address: "2018 S 1st St Suite 169, Milwaukee, WI 53207",
+    address: "2018 S 1st St Suite 207, Milwaukee, WI 53207",
     rating: 4
   },
   {
