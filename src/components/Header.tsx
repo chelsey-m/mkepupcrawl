@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
-import { SlidersHorizontal, Beer } from 'lucide-react';
+import { SlidersHorizontal, Beer, List, MapPin, PawPrint } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
 
 const Header: React.FC = () => {
-  const { filter, setFilter, plans, activePlan, selectPlan, createPlan } = useLocations();
+  const { filter, setFilter, plans, activePlan, selectPlan, createPlan, filteredLocations, selectLocation } = useLocations();
   const [showFilters, setShowFilters] = useState(false);
   const [showPlans, setShowPlans] = useState(false);
+  const [showBreweries, setShowBreweries] = useState(false);
   const [newPlanName, setNewPlanName] = useState('');
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
     if (showPlans) setShowPlans(false);
+    if (showBreweries) setShowBreweries(false);
   };
 
   const togglePlans = () => {
     setShowPlans(!showPlans);
     if (showFilters) setShowFilters(false);
+    if (showBreweries) setShowBreweries(false);
+  };
+
+  const toggleBreweries = () => {
+    setShowBreweries(!showBreweries);
+    if (showFilters) setShowFilters(false);
+    if (showPlans) setShowPlans(false);
   };
 
   const handleCreatePlan = (e: React.FormEvent) => {
@@ -24,6 +33,11 @@ const Header: React.FC = () => {
       createPlan(newPlanName.trim());
       setNewPlanName('');
     }
+  };
+
+  const handleBrewerySelect = (locationId: string) => {
+    selectLocation(locationId);
+    setShowBreweries(false);
   };
 
   return (
@@ -43,6 +57,16 @@ const Header: React.FC = () => {
           >
             <SlidersHorizontal className="w-4 h-4" />
             <span>Filter</span>
+          </button>
+
+          <button 
+            onClick={toggleBreweries}
+            className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-sm ${
+              showBreweries ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            } transition-colors`}
+          >
+            <List className="w-4 h-4" />
+            <span>Browse Breweries</span>
           </button>
           
           <button 
@@ -90,6 +114,44 @@ const Header: React.FC = () => {
             >
               Patio Only
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Breweries dropdown */}
+      {showBreweries && (
+        <div className="border-t border-gray-200 p-3 bg-white shadow-lg animate-fadeDown">
+          <div className="max-h-[60vh] overflow-y-auto">
+            <div className="space-y-2">
+              {filteredLocations.map(brewery => (
+                <button
+                  key={brewery.id}
+                  onClick={() => handleBrewerySelect(brewery.id)}
+                  className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors border border-gray-200"
+                >
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-amber-600" />
+                    <span className="font-medium text-gray-900">{brewery.name}</span>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between">
+                    <span className="text-xs text-gray-600 capitalize">
+                      {brewery.type === 'both' ? 'Indoor & Outdoor' : brewery.type}
+                    </span>
+                    <div className="flex">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <PawPrint
+                          key={i}
+                          className={`w-3 h-3 ${
+                            i < brewery.rating ? 'text-amber-500' : 'text-gray-300'
+                          }`}
+                          fill={i < brewery.rating ? '#f59e0b' : 'none'}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
