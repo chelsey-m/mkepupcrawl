@@ -25,6 +25,7 @@ interface LocationContextType {
   loadSharedPlan: (shareCode: string) => Plan | null;
   exportToGoogleMaps: () => string;
   updateLocationRating: (locationId: string, rating: number) => void;
+  updateLocationType: (locationId: string, type: Location['type']) => void;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(undefined);
@@ -39,6 +40,7 @@ export const useLocations = () => {
 
 const STORAGE_KEY = 'mkePupCrawl_plans';
 const RATINGS_KEY = 'mkePupCrawl_ratings';
+const TYPES_KEY = 'mkePupCrawl_types';
 
 export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -51,7 +53,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize locations with brewery data
   useEffect(() => {
     const initializeLocations = async () => {
       setIsLoading(true);
@@ -81,6 +82,17 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
           });
         }
 
+        // Load custom types
+        const savedTypes = localStorage.getItem(TYPES_KEY);
+        if (savedTypes) {
+          const customTypes = JSON.parse(savedTypes);
+          initialLocations.forEach(location => {
+            if (customTypes[location.id]) {
+              location.type = customTypes[location.id];
+            }
+          });
+        }
+
         setLocations(initialLocations);
       } catch (error) {
         console.error('Error initializing locations:', error);
@@ -92,7 +104,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     initializeLocations();
   }, []);
 
-  // Save plans to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
   }, [plans]);
@@ -103,7 +114,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
       id: nanoid(),
     };
     
-    // Check if location already exists by name and coordinates
     const exists = locations.some(loc => 
       loc.name === newLocation.name && 
       loc.coordinates[0] === newLocation.coordinates[0] && 
@@ -115,7 +125,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  // Filter locations based on the selected filter
   const filteredLocations = locations.filter(location => {
     if (filter.type !== 'all' && filter.type !== location.type && 
         !(filter.type === 'indoor' && location.type === 'both') && 
@@ -129,6 +138,23 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     
     return true;
   });
+
+  const updateLocationType = (locationId: string, type: Location['type']) => {
+    setLocations(prevLocations =>
+      prevLocations.map(location =>
+        location.id === locationId ? { ...location, type } : location
+      )
+    );
+
+    if (selectedLocation?.id === locationId) {
+      setSelectedLocation(prev => prev ? { ...prev, type } : null);
+    }
+
+    const savedTypes = localStorage.getItem(TYPES_KEY);
+    const types = savedTypes ? JSON.parse(savedTypes) : {};
+    types[locationId] = type;
+    localStorage.setItem(TYPES_KEY, JSON.stringify(types));
+  };
 
   const updateLocationRating = (locationId: string, rating: number) => {
     setLocations(prevLocations =>
@@ -317,6 +343,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     loadSharedPlan,
     exportToGoogleMaps,
     updateLocationRating,
+    updateLocationType,
   };
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;

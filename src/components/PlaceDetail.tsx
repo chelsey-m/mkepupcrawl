@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, ExternalLink, Flag, PawPrint, Plus, Minus, GripHorizontal, ChevronRight } from 'lucide-react';
+import { X, ExternalLink, Flag, PawPrint, Plus, Minus, GripHorizontal, ChevronRight, HelpCircle } from 'lucide-react';
 import { useLocations } from '../context/LocationContext';
-import { PrivateNote } from '../types';
+import { PrivateNote, Location } from '../types';
 import Draggable from 'react-draggable';
 
 interface PlaceDetailProps {
@@ -11,7 +11,7 @@ interface PlaceDetailProps {
 const PRIVATE_NOTES_KEY = 'mkePupCrawl_privateNotes';
 
 const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
-  const { selectedLocation, addLocationToPlan, activePlan, sendReport, updateLocationRating } = useLocations();
+  const { selectedLocation, addLocationToPlan, activePlan, sendReport, updateLocationRating, updateLocationType } = useLocations();
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportIssue, setReportIssue] = useState('');
   const [reportEmail, setReportEmail] = useState('');
@@ -24,6 +24,7 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isDragging, setIsDragging] = useState(false);
+  const [showTypeTooltip, setShowTypeTooltip] = useState(false);
   const startY = useRef(0);
 
   useEffect(() => {
@@ -134,6 +135,10 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
     updateLocationRating(selectedLocation.id, newRating);
   };
 
+  const handleTypeChange = (newType: Location['type']) => {
+    updateLocationType(selectedLocation.id, newType);
+  };
+
   const renderPawRating = () => (
     <div className="flex items-center">
       {Array.from({ length: 4 }).map((_, index) => (
@@ -151,6 +156,51 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
           />
         </button>
       ))}
+    </div>
+  );
+
+  const renderTypeSelector = () => (
+    <div className="flex items-center gap-2 mb-2">
+      <div className="flex rounded-lg border border-gray-200 p-0.5 bg-gray-50">
+        <button
+          onClick={() => handleTypeChange('indoor')}
+          className={`px-3 py-1 text-xs rounded-md transition-colors ${
+            type === 'indoor' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          Indoor
+        </button>
+        <button
+          onClick={() => handleTypeChange('outdoor')}
+          className={`px-3 py-1 text-xs rounded-md transition-colors ${
+            type === 'outdoor' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          Outdoor
+        </button>
+        <button
+          onClick={() => handleTypeChange('both')}
+          className={`px-3 py-1 text-xs rounded-md transition-colors ${
+            type === 'both' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          Both
+        </button>
+      </div>
+      <div className="relative">
+        <button
+          onMouseEnter={() => setShowTypeTooltip(true)}
+          onMouseLeave={() => setShowTypeTooltip(false)}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          <HelpCircle className="w-4 h-4" />
+        </button>
+        {showTypeTooltip && (
+          <div className="absolute left-full ml-2 w-48 p-2 text-xs bg-gray-800 text-white rounded shadow-lg z-50">
+            Help keep information up to date by selecting where dogs are allowed
+          </div>
+        )}
+      </div>
     </div>
   );
 
@@ -194,9 +244,7 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
         <div className="overflow-y-auto max-h-[calc(80vh-3rem)]">
           <div className="p-3">
             <div className="flex justify-between items-center mb-2">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
-                {type === 'both' ? 'Indoor & Outdoor' : type}
-              </span>
+              {renderTypeSelector()}
               {renderPawRating()}
             </div>
             
