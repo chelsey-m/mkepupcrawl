@@ -136,5 +136,13 @@ export const breweries: Omit<Location, 'id'>[] = [
     yelpLink: "https://www.yelp.com/biz/burnhearts-milwaukee",
     address: "2599 S Logan Ave, Milwaukee, WI 53207",
     rating: 4
+  },
+  {
+    name: "Sugar Maple",
+    type: "outdoor",
+    coordinates: [43.0179, -87.8876],
+    yelpLink: "https://www.yelp.com/biz/sugar-maple-milwaukee",
+    address: "441 E Lincoln Ave, Milwaukee, WI 53207",
+    rating: 4
   }
 ];
