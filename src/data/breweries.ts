@@ -120,5 +120,13 @@ export const breweries: Omit<Location, 'id'>[] = [
     yelpLink: "https://www.yelp.com/biz/indeed-brewing-company-milwaukee",
     address: "530 S 2nd St, Milwaukee, WI 53204",
     rating: 4
+  },
+  {
+    name: "1840 Brewing Company",
+    type: "outdoor",
+    coordinates: [43.0179, -87.9065],
+    yelpLink: "https://www.yelp.com/biz/1840-brewing-company-milwaukee",
+    address: "342 E Ward St, Milwaukee, WI 53207",
+    rating: 4
   }
 ];
