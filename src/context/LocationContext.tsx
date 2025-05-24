@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { nanoid } from 'nanoid';
-import { Location, Plan, Filter } from '../types';
+import { Location, Plan, Filter, Toast } from '../types';
 import { breweries } from '../data/breweries';
 
 interface LocationContextType {
@@ -11,6 +11,7 @@ interface LocationContextType {
   plans: Plan[];
   activePlan: Plan | null;
   isLoading: boolean;
+  toast: Toast | null;
   addLocation: (location: Omit<Location, 'id'>) => void;
   selectLocation: (locationId: string | null) => void;
   setFilter: (filter: Filter) => void;
@@ -26,6 +27,8 @@ interface LocationContextType {
   exportToGoogleMaps: () => string;
   updateLocationRating: (locationId: string, rating: number) => void;
   updateLocationType: (locationId: string, type: Location['type']) => void;
+  resetFilters: () => void;
+  dismissToast: () => void;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(undefined);
@@ -57,6 +60,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   });
   const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [toast, setToast] = useState<Toast | null>(null);
 
   useEffect(() => {
     const initializeLocations = async () => {
@@ -127,6 +131,20 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem(FILTERS_KEY, JSON.stringify(filter));
   }, [filter]);
 
+  const showToast = useCallback((message: string, action?: () => void) => {
+    setToast({ message, action });
+    setTimeout(() => setToast(null), 5000);
+  }, []);
+
+  const dismissToast = useCallback(() => {
+    setToast(null);
+  }, []);
+
+  const resetFilters = useCallback(() => {
+    setFilter({ type: 'all', minRating: 0 });
+    showToast('Filters have been reset');
+  }, [showToast]);
+
   const addLocation = (location: Omit<Location, 'id'>) => {
     const newLocation = {
       ...location,
@@ -163,9 +181,16 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   });
 
   const updateLocationType = (locationId: string, type: Location['type']) => {
+    const location = locations.find(loc => loc.id === locationId);
+    if (!location) return;
+
+    const willBeFiltered = 
+      (filter.type === 'indoor' && type !== 'indoor' && type !== 'both') ||
+      (filter.type === 'outdoor' && type !== 'outdoor' && type !== 'both');
+
     setLocations(prevLocations =>
-      prevLocations.map(location =>
-        location.id === locationId ? { ...location, type } : location
+      prevLocations.map(loc =>
+        loc.id === locationId ? { ...loc, type } : loc
       )
     );
 
@@ -177,12 +202,24 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     const types = savedTypes ? JSON.parse(savedTypes) : {};
     types[locationId] = type;
     localStorage.setItem(TYPES_KEY, JSON.stringify(types));
+
+    if (willBeFiltered) {
+      showToast(
+        'This brewery no longer matches your filters and will be hidden.',
+        resetFilters
+      );
+    }
   };
 
   const updateLocationRating = (locationId: string, rating: number) => {
+    const location = locations.find(loc => loc.id === locationId);
+    if (!location) return;
+
+    const willBeFiltered = filter.minRating && rating < filter.minRating;
+
     setLocations(prevLocations =>
-      prevLocations.map(location =>
-        location.id === locationId ? { ...location, rating } : location
+      prevLocations.map(loc =>
+        loc.id === locationId ? { ...loc, rating } : loc
       )
     );
 
@@ -194,6 +231,13 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     const ratings = savedRatings ? JSON.parse(savedRatings) : {};
     ratings[locationId] = rating;
     localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings));
+
+    if (willBeFiltered) {
+      showToast(
+        'This brewery no longer matches your rating filter and will be hidden.',
+        resetFilters
+      );
+    }
   };
 
   const selectLocation = (locationId: string | null) => {
@@ -352,6 +396,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     plans,
     activePlan,
     isLoading,
+    toast,
     addLocation,
     selectLocation,
     setFilter,
@@ -367,6 +412,8 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     exportToGoogleMaps,
     updateLocationRating,
     updateLocationType,
+    resetFilters,
+    dismissToast
   };
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;

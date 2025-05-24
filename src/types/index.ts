@@ -42,3 +42,9 @@ export interface PrivateNote {
   content: string;
   lastUpdated: string;
 }
+
+// Toast notification type
+export interface Toast {
+  message: string;
+  action?: () => void;
+}
