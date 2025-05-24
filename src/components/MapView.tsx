@@ -88,12 +88,21 @@ const ViewportManager: React.FC<{
     moveend: () => onViewportChange(map.getBounds()),
     zoomend: () => onViewportChange(map.getBounds())
   });
+
+  // Force a map refresh after mounting
+  useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+  }, [map]);
+
   return null;
 };
 
 const MapController: React.FC<{ 
-  selectedLocation: Location | null 
-}> = React.memo(({ selectedLocation }) => {
+  selectedLocation: Location | null,
+  onMapReady: () => void
+}> = React.memo(({ selectedLocation, onMapReady }) => {
   const map = useMap();
   
   useEffect(() => {
@@ -104,6 +113,11 @@ const MapController: React.FC<{
       });
     }
   }, [map, selectedLocation]);
+
+  useEffect(() => {
+    map.invalidateSize();
+    onMapReady();
+  }, [map, onMapReady]);
   
   return null;
 });
@@ -113,6 +127,7 @@ const MapView: React.FC = () => {
   const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
   const [visibleLocations, setVisibleLocations] = useState<Location[]>([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
+  const [isMapReady, setIsMapReady] = useState(false);
   const mapRef = useRef(null);
 
   const handleViewportChange = useCallback((bounds: LatLngBounds) => {
@@ -149,6 +164,10 @@ const MapView: React.FC = () => {
     selectLocation(id);
   }, [selectLocation]);
 
+  const handleMapReady = useCallback(() => {
+    setIsMapReady(true);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="h-full w-full flex items-center justify-center bg-gray-50">
@@ -181,9 +200,9 @@ const MapView: React.FC = () => {
         />
         
         <ViewportManager onViewportChange={handleViewportChange} />
-        <MapController selectedLocation={selectedLocation} />
+        <MapController selectedLocation={selectedLocation} onMapReady={handleMapReady} />
         
-        {visibleLocations.map(location => (
+        {isMapReady && visibleLocations.map(location => (
           <LocationMarker
             key={location.id}
             location={location}
