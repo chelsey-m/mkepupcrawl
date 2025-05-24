@@ -5,7 +5,7 @@ import Draggable from 'react-draggable';
 
 const FilterOverlay: React.FC = () => {
   const { locations, selectLocation, selectedLocation, filter, setFilter } = useLocations();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const selectedRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -58,10 +58,10 @@ const FilterOverlay: React.FC = () => {
   const filterPanel = (
     <div 
       ref={overlayRef}
-      className={`bg-white/95 backdrop-blur-sm shadow-lg rounded-lg flex flex-col overflow-hidden transition-all duration-300 ${
+      className={`bg-white shadow-lg rounded-lg flex flex-col overflow-hidden transition-all duration-300 ${
         isMobile
           ? 'fixed bottom-0 left-0 right-0'
-          : 'w-[300px] max-w-[30vw]'
+          : 'w-[300px]'
       }`}
       style={{ 
         touchAction: 'pan-y',
@@ -77,6 +77,14 @@ const FilterOverlay: React.FC = () => {
             <GripHorizontal className="w-4 h-4 text-gray-400" />
             <h2 className="font-medium text-base">Breweries</h2>
           </div>
+          {isMobile && (
+            <button
+              onClick={() => setIsExpanded(false)}
+              className="p-1 hover:bg-gray-100 rounded-full"
+            >
+              <ChevronDown className="w-4 h-4" />
+            </button>
+          )}
         </div>
         
         <div className="space-y-2">
@@ -162,18 +170,18 @@ const FilterOverlay: React.FC = () => {
   );
 
   return (
-    <div className={`${isMobile ? 'fixed inset-0 pointer-events-none z-[400]' : 'absolute top-4 right-4 z-[400]'}`}>
+    <div className="fixed top-20 right-4 z-[400]">
       {isMobile ? (
         <div className="pointer-events-auto">
-          <button
-            onClick={() => setIsExpanded(true)}
-            className={`fixed bottom-4 right-4 p-3 bg-amber-500 text-white rounded-full shadow-lg ${
-              isExpanded ? 'hidden' : ''
-            }`}
-          >
-            <SlidersHorizontal className="w-6 h-6" />
-          </button>
-          {filterPanel}
+          {!isExpanded && (
+            <button
+              onClick={() => setIsExpanded(true)}
+              className="fixed bottom-4 right-4 p-3 bg-amber-500 text-white rounded-full shadow-lg"
+            >
+              <SlidersHorizontal className="w-6 h-6" />
+            </button>
+          )}
+          {isExpanded && filterPanel}
         </div>
       ) : (
         <Draggable
