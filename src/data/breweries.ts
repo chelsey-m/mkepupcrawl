@@ -6,7 +6,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "indoor",
     coordinates: [43.0789, -87.9026],
     yelpLink: "https://www.amorphicbeer.com/",
-    address: "3700 N Fratney St, Milwaukee, WI",
+    address: "3700 N Fratney St, Milwaukee, WI 53212",
     rating: 4
   },
   {
@@ -14,7 +14,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "indoor",
     coordinates: [43.0714, -87.8997],
     yelpLink: "https://blackhuskybrewing.com/",
-    address: "909 E Locust St, Milwaukee, WI",
+    address: "909 E Locust St, Milwaukee, WI 53212",
     rating: 4
   },
   {
@@ -22,7 +22,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "indoor",
     coordinates: [43.0241, -87.9066],
     yelpLink: "https://brokenbatbrewery.com/",
-    address: "135 E Pittsburgh Ave, Milwaukee, WI",
+    address: "135 E Pittsburgh Ave, Milwaukee, WI 53204",
     rating: 4
   },
   {
@@ -30,7 +30,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "indoor",
     coordinates: [43.0178, -87.9129],
     yelpLink: "https://www.facebook.com/ComponentBrewing/",
-    address: "2018 S 1st St #169, Milwaukee, WI",
+    address: "2018 S 1st St #169, Milwaukee, WI 53207",
     rating: 4
   },
   {
@@ -38,7 +38,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "indoor",
     coordinates: [43.0169, -87.9129],
     yelpLink: "https://enlightenedbeer.com/",
-    address: "2020 S Allis St, Milwaukee, WI",
+    address: "2020 S Allis St, Milwaukee, WI 53207",
     rating: 4
   },
   {
@@ -46,7 +46,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "indoor",
     coordinates: [43.0784, -87.8947],
     yelpLink: "https://www.gatheringplacebrewing.com/",
-    address: "811 E Vienna Ave, Milwaukee, WI",
+    address: "811 E Vienna Ave, Milwaukee, WI 53212",
     rating: 4
   },
   {
@@ -54,7 +54,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "indoor",
     coordinates: [43.0178, -87.9129],
     yelpLink: "https://newbaronsbrewing.com/",
-    address: "2018 S 1st St #170, Milwaukee, WI",
+    address: "2018 S 1st St #170, Milwaukee, WI 53207",
     rating: 4
   },
   {
@@ -62,7 +62,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "outdoor",
     coordinates: [43.0317, -87.9431],
     yelpLink: "https://thirdspacebrewing.com/",
-    address: "1505 W St Paul Ave, Milwaukee, WI",
+    address: "1505 W St Paul Ave, Milwaukee, WI 53233",
     rating: 4
   },
   {
@@ -70,7 +70,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "outdoor",
     coordinates: [43.0474, -87.8972],
     yelpLink: "https://www.yelp.com/biz/eagle-park-brewing-milwaukee",
-    address: "823 E Hamilton St, Milwaukee, WI",
+    address: "823 E Hamilton St, Milwaukee, WI 53202",
     rating: 4
   },
   {
@@ -78,7 +78,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "outdoor",
     coordinates: [43.0533, -87.9054],
     yelpLink: "https://lakefrontbrewery.com/",
-    address: "1872 N Commerce St, Milwaukee, WI",
+    address: "1872 N Commerce St, Milwaukee, WI 53212",
     rating: 4
   },
   {
@@ -86,7 +86,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "outdoor",
     coordinates: [43.0600, -87.8876],
     yelpLink: "https://www.goodcitybrewing.com/",
-    address: "2108 N Farwell Ave, Milwaukee, WI",
+    address: "2108 N Farwell Ave, Milwaukee, WI 53202",
     rating: 4
   },
   {
@@ -94,7 +94,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "both",
     coordinates: [43.0606, -87.9816],
     yelpLink: "https://www.yelp.com/biz/vennture-brew-company-milwaukee",
-    address: "5519 W North Ave, Milwaukee, WI",
+    address: "5519 W North Ave, Milwaukee, WI 53208",
     rating: 4
   },
   {
@@ -102,7 +102,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     type: "outdoor",
     coordinates: [43.0600, -87.8876],
     yelpLink: "https://www.haciendabeerco.com/",
-    address: "2018 E North Ave, Milwaukee, WI",
+    address: "2018 E North Ave, Milwaukee, WI 53202",
     rating: 4
   },
   {
@@ -159,7 +159,7 @@ export const breweries: Omit<Location, 'id'>[] = [
     coordinates: [43.0526, -87.9169],
     yelpLink: "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee",
     address: "1726 N 5th St, Milwaukee, WI 53212",
-    rating: 1
+    rating: 4
   },
   {
     name: "Central Waters Brewing",
