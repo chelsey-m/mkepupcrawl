@@ -160,3 +160,5 @@ const MapView: React.FC = () => {
     </div>
   );
 };
+
+export default MapView
