@@ -3,14 +3,14 @@ import Header from './components/Header';
 import MapView from './components/MapView';
 import PlaceDetail from './components/PlaceDetail';
 import DayPlanner from './components/DayPlanner';
+import Toast from './components/Toast';
 import { LocationProvider, useLocations } from './context/LocationContext';
 import { breweries } from './data/breweries';
 
 const AppContent: React.FC = () => {
-  const { selectedLocation, selectLocation, addLocation, activePlan } = useLocations();
+  const { selectedLocation, selectLocation, addLocation, activePlan, toast, dismissToast } = useLocations();
 
   React.useEffect(() => {
-    // Add each brewery to the locations only if it hasn't been added yet
     const addedBreweries = new Set();
     
     breweries.forEach(brewery => {
@@ -63,6 +63,13 @@ const AppContent: React.FC = () => {
           <PlaceDetail onClose={() => selectLocation(null)} />
         )}
         {activePlan && <DayPlanner />}
+        {toast && (
+          <Toast 
+            message={toast.message}
+            action={toast.action}
+            onDismiss={dismissToast}
+          />
+        )}
       </main>
     </div>
   );
