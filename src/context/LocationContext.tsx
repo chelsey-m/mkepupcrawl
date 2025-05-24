@@ -41,11 +41,15 @@ export const useLocations = () => {
 const STORAGE_KEY = 'mkePupCrawl_plans';
 const RATINGS_KEY = 'mkePupCrawl_ratings';
 const TYPES_KEY = 'mkePupCrawl_types';
+const FILTERS_KEY = 'mkePupCrawl_filters';
 
 export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [filter, setFilter] = useState<Filter>({ type: 'all', minRating: 0 });
+  const [filter, setFilter] = useState<Filter>(() => {
+    const savedFilters = localStorage.getItem(FILTERS_KEY);
+    return savedFilters ? JSON.parse(savedFilters) : { type: 'all', minRating: 0 };
+  });
   const [plans, setPlans] = useState<Plan[]>(() => {
     const savedPlans = localStorage.getItem(STORAGE_KEY);
     return savedPlans ? JSON.parse(savedPlans) : [];
@@ -71,7 +75,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         const initialLocations = Array.from(uniqueBreweries.values());
 
-        // Load custom ratings
         const savedRatings = localStorage.getItem(RATINGS_KEY);
         if (savedRatings) {
           const customRatings = JSON.parse(savedRatings);
@@ -82,7 +85,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
           });
         }
 
-        // Load custom types
         const savedTypes = localStorage.getItem(TYPES_KEY);
         if (savedTypes) {
           const customTypes = JSON.parse(savedTypes);
@@ -107,6 +109,10 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
   }, [plans]);
+
+  useEffect(() => {
+    localStorage.setItem(FILTERS_KEY, JSON.stringify(filter));
+  }, [filter]);
 
   const addLocation = (location: Omit<Location, 'id'>) => {
     const newLocation = {
