@@ -17,19 +17,67 @@ const breweryIcon = new Icon({
   iconAnchor: [16, 32]
 });
 
+interface MarkerTooltipProps {
+  location: Location;
+  visible: boolean;
+}
+
+const MarkerTooltip: React.FC<MarkerTooltipProps> = ({ location, visible }) => {
+  if (!visible) return null;
+
+  return (
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-gray-800/90 backdrop-blur-sm text-white p-2 rounded-lg shadow-lg pointer-events-none">
+      <h3 className="font-medium text-sm truncate">{location.name}</h3>
+      <div className="flex items-center justify-between mt-1">
+        <span className="text-xs text-gray-300 capitalize">
+          {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
+        </span>
+        <div className="flex">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <PawPrint
+              key={i}
+              className={`w-3 h-3 ${
+                i < location.rating ? 'text-amber-500' : 'text-gray-400'
+              }`}
+              fill={i < location.rating ? '#f59e0b' : 'none'}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LocationMarker: React.FC<{
   location: Location;
   onSelect: (id: string) => void;
 }> = ({ location, onSelect }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
+
+  useEffect(() => {
+    const handleResize = debounce(() => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    }, 150);
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <Marker
-      position={location.coordinates}
-      icon={breweryIcon}
-      eventHandlers={{
-        click: () => onSelect(location.id)
-      }}
-      interactive={true}
-    />
+    <div className="relative">
+      <Marker
+        position={location.coordinates}
+        icon={breweryIcon}
+        eventHandlers={{
+          click: () => onSelect(location.id),
+          mouseover: () => !isMobile && setShowTooltip(true),
+          mouseout: () => setShowTooltip(false)
+        }}
+        interactive={true}
+      />
+      <MarkerTooltip location={location} visible={showTooltip} />
+    </div>
   );
 };
 
