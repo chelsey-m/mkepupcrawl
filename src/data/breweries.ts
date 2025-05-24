@@ -168,5 +168,13 @@ export const breweries: Omit<Location, 'id'>[] = [
     yelpLink: "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee",
     address: "1726 N 5th St, Milwaukee, WI 53212",
     rating: 1
+  },
+  {
+    name: "Central Waters Brewing",
+    type: "outdoor",
+    coordinates: [43.0451, -87.9226],
+    yelpLink: "https://www.yelp.com/biz/central-waters-brewing-co-milwaukee",
+    address: "1037 W Juneau Ave, Milwaukee, WI 53233",
+    rating: 4
   }
 ];
