@@ -144,5 +144,13 @@ export const breweries: Omit<Location, 'id'>[] = [
     yelpLink: "https://www.yelp.com/biz/sugar-maple-milwaukee",
     address: "441 E Lincoln Ave, Milwaukee, WI 53207",
     rating: 4
+  },
+  {
+    name: "Milwaukee Brewing Company (Bay View Taproom)",
+    type: "both",
+    coordinates: [43.0179, -87.8876],
+    yelpLink: "https://www.yelp.com/biz/milwaukee-brewing-company-milwaukee-2",
+    address: "2335 S Kinnickinnic Ave, Milwaukee, WI 53207",
+    rating: 4
   }
 ];
