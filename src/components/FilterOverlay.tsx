@@ -36,8 +36,28 @@ const FilterOverlay: React.FC = () => {
     });
   };
 
-  const paginatedLocations = locations.slice(0, page * itemsPerPage);
-  const hasMore = locations.length > page * itemsPerPage;
+  // Sort locations alphabetically
+  const sortedLocations = [...locations].sort((a, b) => 
+    a.name.localeCompare(b.name)
+  );
+
+  // Apply filters to sorted locations
+  const filteredAndSortedLocations = sortedLocations.filter(location => {
+    if (filter.type !== 'all' && filter.type !== location.type && 
+        !(filter.type === 'indoor' && location.type === 'both') && 
+        !(filter.type === 'outdoor' && location.type === 'both')) {
+      return false;
+    }
+    
+    if (filter.minRating && location.rating < filter.minRating) {
+      return false;
+    }
+    
+    return true;
+  });
+
+  const paginatedLocations = filteredAndSortedLocations.slice(0, page * itemsPerPage);
+  const hasMore = filteredAndSortedLocations.length > page * itemsPerPage;
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
@@ -77,7 +97,7 @@ const FilterOverlay: React.FC = () => {
 
       <div className="p-4 bg-white/95 backdrop-blur-sm">
         <h2 className="font-semibold text-gray-800 mb-3">
-          Breweries on Map ({locations.length})
+          Breweries on Map ({filteredAndSortedLocations.length})
         </h2>
         <div 
           ref={listRef}
