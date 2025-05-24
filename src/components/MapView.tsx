@@ -18,21 +18,20 @@ const breweryIcon = new Icon({
   iconAnchor: [16, 32]
 });
 
-const createClusterIcon = (cluster: any) => {
-  const count = cluster.getChildCount();
-  const size = Math.min(44 + Math.floor(count / 10) * 2, 56);
-  
-  return new DivIcon({
-    html: `
-      <div class="cluster-icon" style="width: ${size}px; height: ${size}px">
-        <span class="cluster-count">${count}</span>
-        <img src="/brewery-icon.svg" alt="Brewery cluster" />
-      </div>
-    `,
-    className: 'custom-cluster-icon',
-    iconSize: [size, size],
-    iconAnchor: [size/2, size/2]
-  });
+const LocationMarker: React.FC<{
+  location: Location;
+  onSelect: (id: string) => void;
+}> = ({ location, onSelect }) => {
+  return (
+    <Marker
+      position={location.coordinates}
+      icon={breweryIcon}
+      eventHandlers={{
+        click: () => onSelect(location.id)
+      }}
+      interactive={true}
+    />
+  );
 };
 
 const ViewportManager: React.FC<{
@@ -61,21 +60,6 @@ const MapController: React.FC<{
   
   return null;
 });
-
-const LocationMarker: React.FC<{
-  location: Location;
-  onSelect: (id: string) => void;
-}> = ({ location, onSelect }) => {
-  return (
-    <Marker
-      position={location.coordinates}
-      icon={breweryIcon}
-      eventHandlers={{
-        click: () => onSelect(location.id)
-      }}
-    />
-  );
-};
 
 const MapView: React.FC = () => {
   const { filteredLocations, selectLocation, selectedLocation, isLoading } = useLocations();
@@ -139,6 +123,8 @@ const MapView: React.FC = () => {
         zoomControl={!isMobile}
         attributionControl={true}
         tap={true}
+        touchZoom={false}
+        style={{ touchAction: 'none' }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -148,23 +134,13 @@ const MapView: React.FC = () => {
         <ViewportManager onViewportChange={handleViewportChange} />
         <MapController selectedLocation={selectedLocation} />
         
-        <MarkerClusterGroup
-          chunkedLoading
-          maxClusterRadius={50}
-          spiderfyOnMaxZoom={true}
-          zoomToBoundsOnClick={true}
-          showCoverageOnHover={false}
-          iconCreateFunction={createClusterIcon}
-          disableClusteringAtZoom={16}
-        >
-          {visibleLocations.map(location => (
-            <LocationMarker
-              key={location.id}
-              location={location}
-              onSelect={handleLocationSelect}
-            />
-          ))}
-        </MarkerClusterGroup>
+        {visibleLocations.map(location => (
+          <LocationMarker
+            key={location.id}
+            location={location}
+            onSelect={handleLocationSelect}
+          />
+        ))}
         
         {userLocation && (
           <Marker 
@@ -174,10 +150,10 @@ const MapView: React.FC = () => {
               iconSize: [24, 24],
               iconAnchor: [12, 12],
             })}
+            interactive={true}
           />
         )}
       </MapContainer>
-      <FilterOverlay />
     </div>
   );
 };
