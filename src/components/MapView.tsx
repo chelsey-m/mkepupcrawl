@@ -89,7 +89,6 @@ const ViewportManager: React.FC<{
     zoomend: () => onViewportChange(map.getBounds())
   });
 
-  // Force a map refresh after mounting
   useEffect(() => {
     setTimeout(() => {
       map.invalidateSize();
