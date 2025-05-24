@@ -25,6 +25,7 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isDragging, setIsDragging] = useState(false);
   const [showTypeTooltip, setShowTypeTooltip] = useState(false);
+  const [showRatingTooltip, setShowRatingTooltip] = useState(false);
   const startY = useRef(0);
 
   useEffect(() => {
@@ -109,6 +110,10 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
     }
   };
 
+  const handleTypeChange = (newType: Location['type']) => {
+    updateLocationType(selectedLocation.id, newType);
+  };
+
   const handleReport = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -131,27 +136,39 @@ const PlaceDetail: React.FC<PlaceDetailProps> = ({ onClose }) => {
     }
   };
 
-  const handleTypeChange = (newType: Location['type']) => {
-    updateLocationType(selectedLocation.id, newType);
-  };
-
   const renderPawRating = () => (
-    <div className="flex items-center">
-      {Array.from({ length: 4 }).map((_, index) => (
+    <div className="flex items-center gap-2">
+      <div className="flex">
+        {[1, 2, 3, 4].map((pawRating) => (
+          <button
+            key={pawRating}
+            onClick={() => updateLocationRating(selectedLocation.id, pawRating)}
+            className="group relative p-0.5"
+            title={`Rate ${pawRating} paws`}
+          >
+            <PawPrint 
+              className={`w-4 h-4 ${
+                pawRating <= rating ? 'text-amber-500' : 'text-gray-300'
+              } transition-colors hover:text-amber-400`}
+              fill={pawRating <= rating ? '#f59e0b' : 'none'}
+            />
+          </button>
+        ))}
+      </div>
+      <div className="relative">
         <button
-          key={index}
-          onClick={() => handleRatingUpdate(index + 1)}
-          className="group relative"
-          title={`Rate ${index + 1} paws`}
+          onMouseEnter={() => setShowRatingTooltip(true)}
+          onMouseLeave={() => setShowRatingTooltip(false)}
+          className="text-gray-400 hover:text-gray-600"
         >
-          <PawPrint 
-            className={`w-4 h-4 ${
-              index < rating ? 'text-amber-500' : 'text-gray-300'
-            } transition-colors hover:text-amber-400`}
-            fill={index < rating ? '#f59e0b' : 'none'}
-          />
+          <HelpCircle className="w-4 h-4" />
         </button>
-      ))}
+        {showRatingTooltip && (
+          <div className="absolute left-full ml-2 w-48 p-2 text-xs bg-gray-800 text-white rounded shadow-lg z-50">
+            Rate your experience with your pup at this brewery
+          </div>
+        )}
+      </div>
     </div>
   );
 
