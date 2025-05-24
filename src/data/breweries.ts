@@ -128,5 +128,13 @@ export const breweries: Omit<Location, 'id'>[] = [
     yelpLink: "https://www.yelp.com/biz/1840-brewing-company-milwaukee",
     address: "342 E Ward St, Milwaukee, WI 53207",
     rating: 4
+  },
+  {
+    name: "Burnhearts",
+    type: "outdoor",
+    coordinates: [43.0169, -87.9065],
+    yelpLink: "https://www.yelp.com/biz/burnhearts-milwaukee",
+    address: "2599 S Logan Ave, Milwaukee, WI 53207",
+    rating: 4
   }
 ];
