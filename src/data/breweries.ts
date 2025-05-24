@@ -1,7 +1,5 @@
 import { Location } from '../types';
 
-// For now, we'll keep the existing structure but use the verified coordinates
-// Once you provide the complete JSON file, we can update the entire data structure
 export const breweries: Omit<Location, 'id'>[] = [
   {
     name: "Milwaukee Brewing Company",
@@ -46,9 +44,129 @@ export const breweries: Omit<Location, 'id'>[] = [
   {
     name: "Enlightened Brewing Co",
     type: "indoor",
-    coordinates: [42.995980, -87.901493],
+    coordinates: [42.99598, -87.901493],
     yelpLink: "https://enlightenedbeer.com/",
     address: "2020 S Allis St, Milwaukee, WI 53207",
+    rating: 4
+  },
+  {
+    name: "Amorphic Beer",
+    type: "indoor",
+    coordinates: [43.0789, -87.9026],
+    yelpLink: "https://www.amorphicbeer.com/",
+    address: "3700 N Fratney St, Milwaukee, WI 53212",
+    rating: 4
+  },
+  {
+    name: "Black Husky Brewing",
+    type: "indoor",
+    coordinates: [43.0714, -87.8997],
+    yelpLink: "https://blackhuskybrewing.com/",
+    address: "909 E Locust St, Milwaukee, WI 53212",
+    rating: 4
+  },
+  {
+    name: "Broken Bat Brewing Co",
+    type: "indoor",
+    coordinates: [43.0241, -87.9066],
+    yelpLink: "https://brokenbatbrewery.com/",
+    address: "135 E Pittsburgh Ave, Milwaukee, WI 53204",
+    rating: 4
+  },
+  {
+    name: "Component Brewing",
+    type: "indoor",
+    coordinates: [43.0178, -87.9129],
+    yelpLink: "https://www.facebook.com/ComponentBrewing/",
+    address: "2018 S 1st St #169, Milwaukee, WI 53207",
+    rating: 4
+  },
+  {
+    name: "Gathering Place Brewing",
+    type: "indoor",
+    coordinates: [43.0784, -87.8947],
+    yelpLink: "https://www.gatheringplacebrewing.com/",
+    address: "811 E Vienna Ave, Milwaukee, WI 53212",
+    rating: 4
+  },
+  {
+    name: "New Barons Brewing Co-op",
+    type: "indoor",
+    coordinates: [43.0178, -87.9129],
+    yelpLink: "https://newbaronsbrewing.com/",
+    address: "2018 S 1st St #170, Milwaukee, WI 53207",
+    rating: 4
+  },
+  {
+    name: "Third Space Brewing",
+    type: "outdoor",
+    coordinates: [43.0317, -87.9431],
+    yelpLink: "https://thirdspacebrewing.com/",
+    address: "1505 W St Paul Ave, Milwaukee, WI 53233",
+    rating: 4
+  },
+  {
+    name: "Eagle Park Brewing Co",
+    type: "outdoor",
+    coordinates: [43.0474, -87.8972],
+    yelpLink: "https://www.yelp.com/biz/eagle-park-brewing-milwaukee",
+    address: "823 E Hamilton St, Milwaukee, WI 53202",
+    rating: 4
+  },
+  {
+    name: "Lakefront Brewery",
+    type: "outdoor",
+    coordinates: [43.0533, -87.9054],
+    yelpLink: "https://lakefrontbrewery.com/",
+    address: "1872 N Commerce St, Milwaukee, WI 53212",
+    rating: 4
+  },
+  {
+    name: "Good City Brewing Co",
+    type: "outdoor",
+    coordinates: [43.0600, -87.8876],
+    yelpLink: "https://www.goodcitybrewing.com/",
+    address: "2108 N Farwell Ave, Milwaukee, WI 53202",
+    rating: 4
+  },
+  {
+    name: "Vennture Brew Co",
+    type: "both",
+    coordinates: [43.0606, -87.9816],
+    yelpLink: "https://www.yelp.com/biz/vennture-brew-company-milwaukee",
+    address: "5519 W North Ave, Milwaukee, WI 53208",
+    rating: 4
+  },
+  {
+    name: "Hacienda Beer Co",
+    type: "outdoor",
+    coordinates: [43.0600, -87.8876],
+    yelpLink: "https://www.haciendabeerco.com/",
+    address: "2018 E North Ave, Milwaukee, WI 53202",
+    rating: 4
+  },
+  {
+    name: "Indeed Brewing Company",
+    type: "outdoor",
+    coordinates: [43.0179, -87.9108],
+    yelpLink: "https://www.yelp.com/biz/indeed-brewing-company-milwaukee",
+    address: "530 S 2nd St, Milwaukee, WI 53204",
+    rating: 4
+  },
+  {
+    name: "Dead Bird Brewing Company",
+    type: "outdoor",
+    coordinates: [43.0526, -87.9169],
+    yelpLink: "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee",
+    address: "1726 N 5th St, Milwaukee, WI 53212",
+    rating: 4
+  },
+  {
+    name: "Central Waters Brewing",
+    type: "outdoor",
+    coordinates: [43.0451, -87.9226],
+    yelpLink: "https://www.yelp.com/biz/central-waters-brewing-co-milwaukee",
+    address: "1037 W Juneau Ave, Milwaukee, WI 53233",
     rating: 4
   }
 ];
