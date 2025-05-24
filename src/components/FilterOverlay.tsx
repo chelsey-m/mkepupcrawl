@@ -25,19 +25,6 @@ const FilterOverlay: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (overlayRef.current && !overlayRef.current.contains(event.target as Node)) {
-        setIsExpanded(false);
-      }
-    };
-
-    if (isMobile && isExpanded) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isMobile, isExpanded]);
-
-  useEffect(() => {
     if (selectedLocation && selectedRef.current && listRef.current) {
       const listRect = listRef.current.getBoundingClientRect();
       const elementRect = selectedRef.current.getBoundingClientRect();
@@ -71,46 +58,25 @@ const FilterOverlay: React.FC = () => {
   const filterPanel = (
     <div 
       ref={overlayRef}
-      className={`bg-white/95 backdrop-blur-sm shadow-lg rounded-t-xl sm:rounded-lg flex flex-col overflow-hidden transition-all duration-300 ${
+      className={`bg-white/95 backdrop-blur-sm shadow-lg rounded-lg flex flex-col overflow-hidden transition-all duration-300 ${
         isMobile
-          ? `fixed bottom-0 left-0 right-0 ${
-              isExpanded 
-                ? 'h-[60vh]' 
-                : 'h-12'
-            }`
-          : 'w-[300px]'
+          ? 'fixed bottom-0 left-0 right-0'
+          : 'w-[300px] max-w-[30vw]'
       }`}
       style={{ 
         touchAction: 'pan-y',
-        WebkitOverflowScrolling: 'touch'
+        WebkitOverflowScrolling: 'touch',
+        maxHeight: isMobile ? '60vh' : 'calc(100vh - 6rem)'
       }}
     >
       <div 
         className="flex-shrink-0 p-3 border-b border-gray-200 cursor-move bg-white sticky top-0 z-10"
-        onClick={() => isMobile && setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            {isMobile ? (
-              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${
-                isExpanded ? 'rotate-180' : ''
-              }`} />
-            ) : (
-              <GripHorizontal className="w-4 h-4 text-gray-400" />
-            )}
-            <h2 className="font-medium text-base">Filters</h2>
+            <GripHorizontal className="w-4 h-4 text-gray-400" />
+            <h2 className="font-medium text-base">Breweries</h2>
           </div>
-          {isMobile && isExpanded && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(false);
-              }}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-          )}
         </div>
         
         <div className="space-y-2">
@@ -152,64 +118,51 @@ const FilterOverlay: React.FC = () => {
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <div className="p-2">
-          <h3 className="text-xs font-semibold uppercase text-gray-500 px-2 mb-2">
-            Breweries {locations.length > 0 && `(${locations.length})`}
-          </h3>
-          {locations.length === 0 ? (
-            <div className="flex items-center justify-center p-4 text-gray-500">
-              <Loader className="w-4 h-4 animate-spin mr-2" />
-              <span>Loading breweries...</span>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {paginatedLocations.map(location => (
-                <button
-                  key={location.id}
-                  ref={selectedLocation?.id === location.id ? selectedRef : null}
-                  onClick={() => {
-                    selectLocation(location.id);
-                    if (isMobile) setIsExpanded(false);
-                  }}
-                  className={`w-full text-left p-2 rounded-md transition-all ${
-                    selectedLocation?.id === location.id
-                      ? 'bg-amber-100'
-                      : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <img src="/brewery-icon.svg" alt="Brewery" className="w-4 h-4" />
-                    <span className="font-medium text-sm">{location.name}</span>
-                  </div>
-                  <div className="text-xs text-gray-500 capitalize flex items-center justify-between mt-1">
-                    <span>{location.type === 'both' ? 'Indoor & Outdoor' : location.type}</span>
-                    <div className="flex">
-                      {Array.from({ length: 4 }).map((_, i) => (
-                        <PawPrint
-                          key={i}
-                          className={`w-3 h-3 ${
-                            i < location.rating ? 'text-amber-500' : 'text-gray-300'
-                          }`}
-                          fill={i < location.rating ? '#f59e0b' : 'none'}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </button>
-              ))}
-              {hasMore && (
-                <div className="p-4 text-center">
-                  <Loader className="w-4 h-4 animate-spin inline-block" />
+          <div className="space-y-1">
+            {paginatedLocations.map(location => (
+              <button
+                key={location.id}
+                ref={selectedLocation?.id === location.id ? selectedRef : null}
+                onClick={() => selectLocation(location.id)}
+                className={`w-full text-left p-2 rounded-md transition-all ${
+                  selectedLocation?.id === location.id
+                    ? 'bg-amber-100'
+                    : 'hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <img src="/brewery-icon.svg" alt="Brewery" className="w-4 h-4" />
+                  <span className="font-medium text-sm">{location.name}</span>
                 </div>
-              )}
-            </div>
-          )}
+                <div className="text-xs text-gray-500 capitalize flex items-center justify-between mt-1">
+                  <span>{location.type === 'both' ? 'Indoor & Outdoor' : location.type}</span>
+                  <div className="flex">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <PawPrint
+                        key={i}
+                        className={`w-3 h-3 ${
+                          i < location.rating ? 'text-amber-500' : 'text-gray-300'
+                        }`}
+                        fill={i < location.rating ? '#f59e0b' : 'none'}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </button>
+            ))}
+            {hasMore && (
+              <div className="p-4 text-center">
+                <Loader className="w-4 h-4 animate-spin inline-block" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className={`${isMobile ? 'fixed inset-0 pointer-events-none' : 'absolute top-4 right-4'} z-[400]`}>
+    <div className={`${isMobile ? 'fixed inset-0 pointer-events-none z-[400]' : 'absolute top-4 right-4 z-[400]'}`}>
       {isMobile ? (
         <div className="pointer-events-auto">
           <button
