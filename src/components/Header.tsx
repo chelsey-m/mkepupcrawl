@@ -46,6 +46,11 @@ const Header: React.FC = () => {
     }
   };
 
+  // Sort breweries alphabetically by name
+  const sortedBreweries = [...filteredLocations].sort((a, b) => 
+    a.name.localeCompare(b.name)
+  );
+
   return (
     <header className="bg-white shadow-md relative z-50">
       <div className="flex items-center justify-between px-4 py-3">
@@ -134,7 +139,7 @@ const Header: React.FC = () => {
             showBreweries ? 'animate-fadeDown' : ''
           }`}>
             <div className="flex items-center justify-between p-3 border-b border-gray-100">
-              <h3 className="font-medium text-gray-700">Breweries on Map ({filteredLocations.length})</h3>
+              <h3 className="font-medium text-gray-700">Breweries on Map ({sortedBreweries.length})</h3>
               <button
                 onClick={() => setShowBreweries(false)}
                 className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -143,7 +148,7 @@ const Header: React.FC = () => {
               </button>
             </div>
             <div className="overflow-y-auto" style={{ maxHeight: 'calc(50vh - 3rem)' }}>
-              {filteredLocations.map(brewery => (
+              {sortedBreweries.map(brewery => (
                 <button
                   key={brewery.id}
                   onClick={() => handleBrewerySelect(brewery.id)}
