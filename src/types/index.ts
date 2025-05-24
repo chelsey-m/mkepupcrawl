@@ -48,3 +48,14 @@ export interface Toast {
   message: string;
   action?: () => void;
 }
+
+// Verified brewery data from JSON
+export interface VerifiedBrewery {
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  tags: string[];
+  pawRating: number;
+  yelp: string;
+}
