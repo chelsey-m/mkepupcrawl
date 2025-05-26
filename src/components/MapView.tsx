@@ -64,6 +64,9 @@ const LocationMarker: React.FC<{
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Log marker position for debugging
+  console.log(`Placing marker for ${location.name} at [${location.coordinates[0]}, ${location.coordinates[1]}]`);
+
   return (
     <div className="relative">
       <Marker
