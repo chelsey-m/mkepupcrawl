@@ -66,7 +66,10 @@ const LocationMarker: React.FC<{
   }, []);
 
   // Create LatLngTuple for marker position
-  const position: LatLngTuple = [location.coordinates[0], location.coordinates[1]];
+  const position: LatLngTuple = location.coordinates;
+
+  // Log marker position for debugging
+  console.log(`Placing marker for ${location.name} at:`, position);
 
   return (
     <div className="relative">
