@@ -1,158 +1,5 @@
 [
   {
-    "name": "Milwaukee Brewing Company",
-    "address": "2335 S Kinnickinnic Ave, Milwaukee, WI 53207",
-    "latitude": 42.997142,
-    "longitude": -87.904026,
-    "tags": ["Indoor", "Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/milwaukee-brewing-company-milwaukee-2"
-  },
-  {
-    "name": "Sugar Maple",
-    "address": "441 E Lincoln Ave, Milwaukee, WI 53207",
-    "latitude": 42.996197,
-    "longitude": -87.903406,
-    "tags": ["Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/sugar-maple-milwaukee"
-  },
-  {
-    "name": "1840 Brewing Company",
-    "address": "342 E Ward St, Milwaukee, WI 53207",
-    "latitude": 42.994653,
-    "longitude": -87.899987,
-    "tags": ["Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/1840-brewing-company-milwaukee"
-  },
-  {
-    "name": "Burnhearts",
-    "address": "2599 S Logan Ave, Milwaukee, WI 53207",
-    "latitude": 42.998591,
-    "longitude": -87.903309,
-    "tags": ["Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/burnhearts-milwaukee"
-  },
-  {
-    "name": "Torzala Brewing Company",
-    "address": "2018 S 1st St Suite 207, Milwaukee, WI 53207",
-    "latitude": 42.996128,
-    "longitude": -87.901768,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/torzala-brewing-company-milwaukee"
-  },
-  {
-    "name": "Enlightened Brewing Company",
-    "address": "2020 S Allis St, Milwaukee, WI 53207",
-    "latitude": 42.99598,
-    "longitude": -87.901493,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/enlightened-brewing-company-milwaukee"
-  },
-  {
-    "name": "Amorphic Beer",
-    "address": "3700 N Fratney St, Milwaukee, WI 53212",
-    "latitude": 43.088182,
-    "longitude": -87.903224,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/amorphic-beer-milwaukee"
-  },
-  {
-    "name": "Black Husky Brewing Co",
-    "address": "909 E Locust St, Milwaukee, WI 53212",
-    "latitude": 43.075317,
-    "longitude": -87.899681,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/black-husky-brewing-milwaukee"
-  },
-  {
-    "name": "Broken Bat Brewing Co",
-    "address": "135 E Pittsburgh Ave, Milwaukee, WI 53204",
-    "latitude": 43.024304,
-    "longitude": -87.910271,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/broken-bat-brewing-company-milwaukee"
-  },
-  {
-    "name": "Central Waters Brewing",
-    "address": "1037 W Juneau Ave, Milwaukee, WI 53233",
-    "latitude": 43.043202,
-    "longitude": -87.926727,
-    "tags": ["Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/central-waters-brewing-co-milwaukee"
-  },
-  {
-    "name": "Component Brewing",
-    "address": "2018 S 1st St #169, Milwaukee, WI 53207",
-    "latitude": 42.996046,
-    "longitude": -87.901694,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/component-brewing-company-milwaukee"
-  },
-  {
-    "name": "Dead Bird Brewing Company",
-    "address": "1726 N 5th St, Milwaukee, WI 53212",
-    "latitude": 43.051095,
-    "longitude": -87.916613,
-    "tags": ["Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee"
-  },
-  {
-    "name": "Eagle Park Brewing Co",
-    "address": "823 E Hamilton St, Milwaukee, WI 53202",
-    "latitude": 43.048799,
-    "longitude": -87.896087,
-    "tags": ["Indoor", "Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/eagle-park-brewing-company-milwaukee"
-  },
-  {
-    "name": "Gathering Place Brewing",
-    "address": "811 E Vienna Ave, Milwaukee, WI 53212",
-    "latitude": 43.093029,
-    "longitude": -87.896363,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/gathering-place-brewing-company-milwaukee"
-  },
-  {
-    "name": "Good City Brewing Co",
-    "address": "2108 N Farwell Ave, Milwaukee, WI 53202",
-    "latitude": 43.057252,
-    "longitude": -87.885015,
-    "tags": ["Indoor", "Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/good-city-brewing-milwaukee"
-  },
-  {
-    "name": "Hacienda Beer Co",
-    "address": "2018 E North Ave, Milwaukee, WI 53202",
-    "latitude": 43.060586,
-    "longitude": -87.882462,
-    "tags": ["Indoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/hacienda-beer-co-milwaukee"
-  },
-  {
-    "name": "Indeed Brewing Company",
-    "address": "530 S 2nd St, Milwaukee, WI 53204",
-    "latitude": 43.025303,
-    "longitude": -87.913546,
-    "tags": ["Outdoor"],
-    "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/indeed-brewing-company-milwaukee"
-  },
-  {
     "name": "Lakefront Brewery",
     "address": "1872 N Commerce St, Milwaukee, WI 53212",
     "latitude": 43.052335,
@@ -162,30 +9,183 @@
     "yelp": "https://www.yelp.com/biz/lakefront-brewery-milwaukee"
   },
   {
-    "name": "New Barons Brewing Co-op",
-    "address": "2018 S 1st St #170, Milwaukee, WI 53207",
-    "latitude": 42.996106,
-    "longitude": -87.901731,
+    "name": "Eagle Park Brewing Co",
+    "address": "823 E Hamilton St, Milwaukee, WI 53202",
+    "latitude": 43.050204,
+    "longitude": -87.898339,
+    "tags": ["Indoor", "Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/eagle-park-brewing-company-milwaukee"
+  },
+  {
+    "name": "1840 Brewing Company",
+    "address": "342 E Ward St, Milwaukee, WI 53207",
+    "latitude": 42.994448,
+    "longitude": -87.903716,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/1840-brewing-company-milwaukee"
+  },
+  {
+    "name": "Burnhearts",
+    "address": "2599 S Logan Ave, Milwaukee, WI 53207",
+    "latitude": 42.997425,
+    "longitude": -87.903296,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/burnhearts-milwaukee"
+  },
+  {
+    "name": "Central Waters Brewing",
+    "address": "1037 W Juneau Ave, Milwaukee, WI 53233",
+    "latitude": 43.041103,
+    "longitude": -87.927369,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/central-waters-brewing-co-milwaukee"
+  },
+  {
+    "name": "Dead Bird Brewing Company",
+    "address": "1726 N 5th St, Milwaukee, WI 53212",
+    "latitude": 43.053109,
+    "longitude": -87.917716,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/dead-bird-brewing-company-milwaukee"
+  },
+  {
+    "name": "Amorphic Beer",
+    "address": "3700 N Fratney St, Milwaukee, WI 53212",
+    "latitude": 43.096775,
+    "longitude": -87.905649,
     "tags": ["Indoor"],
     "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/new-barons-brewing-cooperative-milwaukee"
+    "yelp": "https://www.yelp.com/biz/amorphic-beer-milwaukee"
+  },
+  {
+    "name": "Perspective Brewing",
+    "address": "7508 W Greenfield Ave, West Allis, WI 53214",
+    "latitude": 43.017293,
+    "longitude": -88.006015,
+    "tags": ["Indoor", "Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/perspective-brewing-west-allis"
+  },
+  {
+    "name": "Black Husky Brewing",
+    "address": "909 E Locust St, Milwaukee, WI 53212",
+    "latitude": 43.073045,
+    "longitude": -87.899413,
+    "tags": ["Indoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/black-husky-brewing-milwaukee"
+  },
+  {
+    "name": "Broken Bat Brewing Co",
+    "address": "135 E Pittsburgh Ave, Milwaukee, WI 53204",
+    "latitude": 43.027491,
+    "longitude": -87.910928,
+    "tags": ["Indoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/broken-bat-brewing-co-milwaukee"
+  },
+  {
+    "name": "Component Brewing",
+    "address": "2018 S 1st St #169, Milwaukee, WI 53207",
+    "latitude": 43.010923,
+    "longitude": -87.913242,
+    "tags": ["Indoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/component-brewing-company-milwaukee"
+  },
+  {
+    "name": "Gathering Place Brewing",
+    "address": "811 E Vienna Ave, Milwaukee, WI 53212",
+    "latitude": 43.102482,
+    "longitude": -87.899155,
+    "tags": ["Indoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/gathering-place-brewing-company-milwaukee"
+  },
+  {
+    "name": "Good City Brewing Co",
+    "address": "2108 N Farwell Ave, Milwaukee, WI 53202",
+    "latitude": 43.057378,
+    "longitude": -87.885633,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/good-city-brewing-milwaukee"
+  },
+  {
+    "name": "Enlightened Brewing Co",
+    "address": "2020 S Allis St, Milwaukee, WI 53207",
+    "latitude": 43.011461,
+    "longitude": -87.913129,
+    "tags": ["Indoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/enlightened-brewing-company-milwaukee"
   },
   {
     "name": "Third Space Brewing",
     "address": "1505 W St Paul Ave, Milwaukee, WI 53233",
-    "latitude": 43.033351,
-    "longitude": -87.930983,
+    "latitude": 43.035829,
+    "longitude": -87.931026,
     "tags": ["Outdoor"],
     "pawRating": 4,
     "yelp": "https://www.yelp.com/biz/third-space-brewing-milwaukee"
   },
   {
-    "name": "Venture Brew Co",
-    "address": "5519 W North Ave, Milwaukee, WI 53210",
-    "latitude": 43.061031,
-    "longitude": -87.987584,
+    "name": "New Barons Brewing Co-op",
+    "address": "2018 S 1st St #170, Milwaukee, WI 53207",
+    "latitude": 43.01108,
+    "longitude": -87.913242,
+    "tags": ["Indoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/new-barons-brewing-co-operative-milwaukee"
+  },
+  {
+    "name": "Torzala Brewing Company",
+    "address": "2018 S 1st St Suite 207, Milwaukee, WI 53207",
+    "latitude": 43.01143,
+    "longitude": -87.913393,
+    "tags": ["Indoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/torzala-brewing-company-milwaukee"
+  },
+  {
+    "name": "Indeed Brewing Company",
+    "address": "530 S 2nd St, Milwaukee, WI 53204",
+    "latitude": 43.027418,
+    "longitude": -87.913225,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/indeed-brewing-company-milwaukee"
+  },
+  {
+    "name": "Sugar Maple",
+    "address": "441 E Lincoln Ave, Milwaukee, WI 53207",
+    "latitude": 43.002933,
+    "longitude": -87.907392,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/sugar-maple-milwaukee"
+  },
+  {
+    "name": "Milwaukee Brewing Company (Bay View)",
+    "address": "2335 S Kinnickinnic Ave, Milwaukee, WI 53207",
+    "latitude": 42.998641,
+    "longitude": -87.904378,
     "tags": ["Indoor", "Outdoor"],
     "pawRating": 4,
-    "yelp": "https://www.yelp.com/biz/venture-brew-co-milwaukee"
+    "yelp": "https://www.yelp.com/biz/milwaukee-brewing-company-milwaukee-2"
+  },
+  {
+    "name": "Hacienda Beer Co",
+    "address": "2018 S 1st St #206, Milwaukee, WI 53207",
+    "latitude": 43.011281,
+    "longitude": -87.913358,
+    "tags": ["Outdoor"],
+    "pawRating": 4,
+    "yelp": "https://www.yelp.com/biz/hacienda-beer-co-milwaukee"
   }
 ]
