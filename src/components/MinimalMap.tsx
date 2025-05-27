@@ -12,7 +12,7 @@ const breweryIcon = new Icon({
 const MinimalMap: React.FC = () => {
   return (
     <MapContainer 
-      center={[43.052402, -87.900836]} 
+      center={[43.052335, -87.900908]} 
       zoom={18} 
       style={{ height: '100vh', width: '100vw' }}
     >
@@ -21,7 +21,7 @@ const MinimalMap: React.FC = () => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <Marker 
-        position={[43.052402, -87.900836]}
+        position={[43.052335, -87.900908]}
         icon={breweryIcon}
       >
         <Popup>Lakefront Brewery</Popup>
