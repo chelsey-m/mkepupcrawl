@@ -12,12 +12,12 @@ const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
 
-// Create a custom icon with red border for debugging
 const breweryIcon = new Icon({
   iconUrl: '/brewery-icon.svg',
   iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  className: 'brewery-marker-debug' // This class will be styled with CSS
+  iconAnchor: [16, 16], // Center the icon anchor point
+  popupAnchor: [0, -16], // Adjust popup to appear above the marker
+  className: 'brewery-marker-debug'
 });
 
 interface MarkerTooltipProps {
@@ -70,10 +70,8 @@ const LocationMarker: React.FC<{
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Create LatLngTuple for marker position
   const position: LatLngTuple = location.coordinates;
 
-  // Log marker position for debugging
   console.log(`Placing marker for ${location.name}:`, {
     coordinates: position,
     address: location.address
@@ -116,9 +114,15 @@ const ViewportManager: React.FC<{
   });
 
   useEffect(() => {
-    setTimeout(() => {
+    // Force map to recalculate size after mounting
+    map.invalidateSize();
+    
+    // Additional check after a short delay to ensure proper sizing
+    const timer = setTimeout(() => {
       map.invalidateSize();
-    }, 100);
+    }, 250);
+
+    return () => clearTimeout(timer);
   }, [map]);
 
   return null;
@@ -140,8 +144,16 @@ const MapController: React.FC<{
   }, [map, selectedLocation]);
 
   useEffect(() => {
+    // Force map to recalculate size
     map.invalidateSize();
-    onMapReady();
+    
+    // Additional check after a short delay
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+      onMapReady();
+    }, 250);
+
+    return () => clearTimeout(timer);
   }, [map, onMapReady]);
   
   return null;
