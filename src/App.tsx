@@ -39,13 +39,15 @@ const AppContent: React.FC = () => {
         </div>
         <div className="bg-amber-50 py-8">
           <div className="max-w-4xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center gap-6 bg-white rounded-2xl p-6 shadow-lg">
+            <div className="flex flex-col md:flex-row items-start gap-6 bg-white rounded-2xl p-6 shadow-lg">
               <div className="w-full md:w-48 flex-shrink-0">
-                <img 
-                  src="/june.png" 
-                  alt="June, our Chief Pup Officer 🐾" 
-                  className="w-full h-48 object-cover rounded-xl shadow-lg"
-                />
+                <div className="h-48 rounded-xl shadow-lg overflow-hidden">
+                  <img 
+                    src="/june.png" 
+                    alt="June, our Chief Pup Officer 🐾" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-2xl font-bold text-amber-800 mb-2">Meet June</h3>
