@@ -26,18 +26,18 @@ const AppContent: React.FC = () => {
   }, [addLocation]);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-1 relative">
+      <main className="flex-1 flex flex-col">
         <div className="bg-amber-50 p-4 text-center">
           <h2 className="text-2xl font-semibold text-amber-800 font-display mb-2">
             Find your next pup-friendly pint! 🍺
           </h2>
         </div>
-        <div className="h-[500px]">
+        <div className="h-[500px] relative">
           <MapView />
         </div>
-        <div className="bg-amber-50 py-4">
+        <div className="bg-amber-50 py-8">
           <div className="max-w-4xl mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center gap-6 bg-white rounded-2xl p-6 shadow-lg">
               <div className="w-full md:w-48 flex-shrink-0">
