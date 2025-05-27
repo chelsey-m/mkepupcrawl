@@ -37,9 +37,9 @@ const AppContent: React.FC = () => {
         <div className="h-[500px] relative">
           <MapView />
         </div>
-        <div className="bg-amber-50 py-12 mt-8">
-          <div className="container max-w-4xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-start gap-8 bg-white rounded-2xl p-8 shadow-lg">
+        <div className="bg-amber-50 py-8">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center gap-6 bg-white rounded-2xl p-6 shadow-lg">
               <div className="w-full md:w-48 flex-shrink-0">
                 <img 
                   src="/june.png" 
@@ -48,11 +48,11 @@ const AppContent: React.FC = () => {
                 />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-2xl font-bold text-amber-800 mb-3">Meet June</h3>
-                <p className="text-lg text-amber-700 mb-2">
+                <h3 className="text-2xl font-bold text-amber-800 mb-2">Meet June</h3>
+                <p className="text-lg text-amber-700">
                   Our Chief Pup Officer 🐾
                 </p>
-                <p className="text-amber-600">
+                <p className="mt-2 text-amber-600">
                   Leading the way to Milwaukee's most dog-friendly breweries, one paw at a time.
                 </p>
               </div>
