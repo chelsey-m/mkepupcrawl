@@ -18,3 +18,19 @@ const convertBreweryData = (brewery: VerifiedBrewery): Omit<Location, 'id'> => {
 };
 
 export const breweries: Omit<Location, 'id'>[] = breweriesJson.map(convertBreweryData);
+
+// Detailed coordinate logging
+console.log('=== Brewery Coordinates Verification ===');
+console.log('Total breweries loaded:', breweries.length);
+console.log('\nLakefront Brewery Details:');
+const lakefront = breweries.find(b => b.name === 'Lakefront Brewery');
+console.log('Name:', lakefront?.name);
+console.log('Coordinates:', lakefront?.coordinates);
+console.log('Address:', lakefront?.address);
+
+console.log('\nAll Brewery Coordinates:');
+breweries.forEach(brewery => {
+  console.log(`${brewery.name}:`);
+  console.log(`  Coordinates: [${brewery.coordinates[0]}, ${brewery.coordinates[1]}]`);
+  console.log(`  Address: ${brewery.address}\n`);
+});
