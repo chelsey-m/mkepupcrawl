@@ -15,8 +15,7 @@ const MOBILE_BREAKPOINT = 768;
 const breweryIcon = new Icon({
   iconUrl: '/brewery-icon.svg',
   iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
+  iconAnchor: [16, 16]
 });
 
 interface MarkerTooltipProps {
