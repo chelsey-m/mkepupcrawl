@@ -2,8 +2,8 @@
   {
     "name": "Lakefront Brewery",
     "address": "1872 N Commerce St, Milwaukee, WI 53212",
-    "latitude": 43.052402,
-    "longitude": -87.900836,
+    "latitude": 43.052335,
+    "longitude": -87.900908,
     "tags": ["Indoor", "Outdoor"],
     "pawRating": 4,
     "yelp": "https://www.yelp.com/biz/lakefront-brewery-milwaukee"
