@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { Icon, LatLngTuple, DivIcon, LatLngBounds } from 'leaflet';
 import { useLocations } from '../context/LocationContext';
@@ -15,9 +15,7 @@ const MOBILE_BREAKPOINT = 768;
 const breweryIcon = new Icon({
   iconUrl: '/brewery-icon.svg',
   iconSize: [32, 32],
-  iconAnchor: [16, 16], // Center the icon anchor point
-  popupAnchor: [0, -16], // Adjust popup to appear above the marker
-  className: 'brewery-marker-debug'
+  iconAnchor: [16, 16]
 });
 
 interface MarkerTooltipProps {
@@ -31,9 +29,6 @@ const MarkerTooltip: React.FC<MarkerTooltipProps> = ({ location, visible }) => {
   return (
     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-gray-800/90 backdrop-blur-sm text-white p-2 rounded-lg shadow-lg pointer-events-none">
       <h3 className="font-medium text-sm truncate">{location.name}</h3>
-      <p className="text-xs text-gray-300 mt-1">
-        {location.coordinates[0].toFixed(6)}, {location.coordinates[1].toFixed(6)}
-      </p>
       <div className="flex items-center justify-between mt-1">
         <span className="text-xs text-gray-300 capitalize">
           {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
@@ -72,11 +67,6 @@ const LocationMarker: React.FC<{
 
   const position: LatLngTuple = location.coordinates;
 
-  console.log(`Placing marker for ${location.name}:`, {
-    coordinates: position,
-    address: location.address
-  });
-
   return (
     <div className="relative">
       <Marker
@@ -87,19 +77,7 @@ const LocationMarker: React.FC<{
           mouseover: () => !isMobile && setShowTooltip(true),
           mouseout: () => setShowTooltip(false)
         }}
-      >
-        <Popup>
-          <div className="p-2">
-            <h3 className="font-medium">{location.name}</h3>
-            <p className="text-xs text-gray-600 mt-1">
-              Coordinates: {position[0].toFixed(6)}, {position[1].toFixed(6)}
-            </p>
-            <p className="text-xs text-gray-600">
-              Type: {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
-            </p>
-          </div>
-        </Popup>
-      </Marker>
+      />
       <MarkerTooltip location={location} visible={showTooltip} />
     </div>
   );
@@ -114,10 +92,8 @@ const ViewportManager: React.FC<{
   });
 
   useEffect(() => {
-    // Force map to recalculate size after mounting
     map.invalidateSize();
     
-    // Additional check after a short delay to ensure proper sizing
     const timer = setTimeout(() => {
       map.invalidateSize();
     }, 250);
@@ -144,10 +120,8 @@ const MapController: React.FC<{
   }, [map, selectedLocation]);
 
   useEffect(() => {
-    // Force map to recalculate size
     map.invalidateSize();
     
-    // Additional check after a short delay
     const timer = setTimeout(() => {
       map.invalidateSize();
       onMapReady();
