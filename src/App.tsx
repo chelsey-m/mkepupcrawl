@@ -40,11 +40,11 @@ const AppContent: React.FC = () => {
         <div className="bg-amber-50 py-12 mt-8">
           <div className="container max-w-4xl mx-auto px-4">
             <div className="flex flex-col md:flex-row items-start gap-8 bg-white rounded-2xl p-8 shadow-lg">
-              <div className="w-full md:w-72 flex-shrink-0">
+              <div className="w-full md:w-48 flex-shrink-0">
                 <img 
                   src="/june.png" 
                   alt="June, our Chief Pup Officer 🐾" 
-                  className="w-full aspect-square object-cover rounded-xl shadow-lg"
+                  className="w-full h-48 object-cover rounded-xl shadow-lg"
                 />
               </div>
               <div className="flex-1 text-center md:text-left">
