@@ -66,15 +66,27 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     const initializeLocations = async () => {
       setIsLoading(true);
       try {
+        // Log the raw breweries data
+        console.log('Raw breweries data:', breweries);
+        
         const uniqueBreweries = new Map();
         
         breweries.forEach(brewery => {
           const key = `${brewery.name}-${brewery.coordinates.join(',')}`;
           if (!uniqueBreweries.has(key)) {
-            uniqueBreweries.set(key, {
+            const location: Location = {
               ...brewery,
               id: nanoid()
+            };
+            
+            // Log each location as it's being processed
+            console.log('Processing location:', {
+              name: location.name,
+              coordinates: location.coordinates,
+              address: location.address
             });
+            
+            uniqueBreweries.set(key, location);
           }
         });
 
@@ -111,6 +123,13 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
             }
           });
         }
+
+        // Log final processed locations
+        console.log('Final processed locations:', initialLocations.map(loc => ({
+          name: loc.name,
+          coordinates: loc.coordinates,
+          address: loc.address
+        })));
 
         setLocations(initialLocations);
       } catch (error) {
