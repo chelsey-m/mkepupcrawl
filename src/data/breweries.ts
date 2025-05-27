@@ -10,7 +10,7 @@ const convertBreweryData = (brewery: VerifiedBrewery): Omit<Location, 'id'> => {
       : brewery.tags.includes('Indoor') 
         ? 'indoor' 
         : 'outdoor',
-    coordinates: [brewery.latitude, brewery.longitude],
+    coordinates: [brewery.latitude, brewery.longitude] as [number, number],
     yelpLink: brewery.yelp,
     address: brewery.address,
     rating: brewery.pawRating
@@ -19,7 +19,8 @@ const convertBreweryData = (brewery: VerifiedBrewery): Omit<Location, 'id'> => {
 
 export const breweries: Omit<Location, 'id'>[] = breweriesJson.map(convertBreweryData);
 
-console.log('Loaded breweries with coordinates:');
+// Log coordinates for verification
+console.log('Brewery locations loaded:');
 breweries.forEach(brewery => {
   console.log(`${brewery.name}: [${brewery.coordinates[0]}, ${brewery.coordinates[1]}]`);
 });

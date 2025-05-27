@@ -7,6 +7,7 @@ import { Location } from '../types';
 import { Beer, PawPrint, Loader } from 'lucide-react';
 import debounce from 'lodash/debounce';
 
+// Center on Milwaukee
 const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
 const DEFAULT_ZOOM = 13;
 const MOBILE_BREAKPOINT = 768;
@@ -64,20 +65,19 @@ const LocationMarker: React.FC<{
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Log marker position for debugging
-  console.log(`Placing marker for ${location.name} at [${location.coordinates[0]}, ${location.coordinates[1]}]`);
+  // Create LatLngTuple for marker position
+  const position: LatLngTuple = [location.coordinates[0], location.coordinates[1]];
 
   return (
     <div className="relative">
       <Marker
-        position={location.coordinates}
+        position={position}
         icon={breweryIcon}
         eventHandlers={{
           click: () => onSelect(location.id),
           mouseover: () => !isMobile && setShowTooltip(true),
           mouseout: () => setShowTooltip(false)
         }}
-        interactive={true}
       />
       <MarkerTooltip location={location} visible={showTooltip} />
     </div>
@@ -220,7 +220,6 @@ const MapView: React.FC = () => {
               iconSize: [24, 24],
               iconAnchor: [12, 12],
             })}
-            interactive={true}
           />
         )}
       </MapContainer>
