@@ -1,36 +1,40 @@
-import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-cluster';
-import { Icon, LatLngTuple, DivIcon, LatLngBounds } from 'leaflet';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { GoogleMap, useLoadScript, MarkerF, InfoWindowF } from '@react-google-maps/api';
 import { useLocations } from '../context/LocationContext';
 import { Location } from '../types';
-import { Beer, PawPrint, Loader } from 'lucide-react';
-import debounce from 'lodash/debounce';
+import { PawPrint, Loader, ExternalLink } from 'lucide-react';
 
 // Center on Milwaukee
-const DEFAULT_CENTER: LatLngTuple = [43.0389, -87.9065];
+const DEFAULT_CENTER = { lat: 43.0389, lng: -87.9065 };
 const DEFAULT_ZOOM = 13;
-const MOBILE_BREAKPOINT = 768;
 
-const breweryIcon = new Icon({
-  iconUrl: '/brewery-icon.svg',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16]
-});
+const mapStyles = {
+  width: '100%',
+  height: '100%'
+};
+
+const mapOptions = {
+  disableDefaultUI: true,
+  zoomControl: true,
+  styles: [
+    {
+      featureType: 'poi.business',
+      elementType: 'labels',
+      stylers: [{ visibility: 'off' }]
+    }
+  ]
+};
 
 interface MarkerTooltipProps {
   location: Location;
-  visible: boolean;
 }
 
-const MarkerTooltip: React.FC<MarkerTooltipProps> = ({ location, visible }) => {
-  if (!visible) return null;
-
+const MarkerTooltip: React.FC<MarkerTooltipProps> = ({ location }) => {
   return (
-    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-gray-800/90 backdrop-blur-sm text-white p-2 rounded-lg shadow-lg pointer-events-none">
-      <h3 className="font-medium text-sm truncate">{location.name}</h3>
-      <div className="flex items-center justify-between mt-1">
-        <span className="text-xs text-gray-300 capitalize">
+    <div className="min-w-[200px] max-w-[300px]">
+      <h3 className="font-medium text-gray-900 mb-1">{location.name}</h3>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-gray-600 capitalize">
           {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
         </span>
         <div className="flex">
@@ -38,144 +42,57 @@ const MarkerTooltip: React.FC<MarkerTooltipProps> = ({ location, visible }) => {
             <PawPrint
               key={i}
               className={`w-3 h-3 ${
-                i < location.rating ? 'text-amber-500' : 'text-gray-400'
+                i < location.rating ? 'text-amber-500' : 'text-gray-300'
               }`}
               fill={i < location.rating ? '#f59e0b' : 'none'}
             />
           ))}
         </div>
       </div>
+      {location.notes && (
+        <p className="text-sm text-gray-700 mb-2">{location.notes}</p>
+      )}
+      {location.yelpLink && (
+        <a
+          href={location.yelpLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+        >
+          <ExternalLink className="w-3 h-3" />
+          <span>View on Yelp</span>
+        </a>
+      )}
     </div>
   );
 };
-
-const LocationMarker: React.FC<{
-  location: Location;
-  onSelect: (id: string) => void;
-}> = ({ location, onSelect }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
-
-  useEffect(() => {
-    const handleResize = debounce(() => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    }, 150);
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Create LatLngTuple for marker position
-  const position: LatLngTuple = [location.coordinates[0], location.coordinates[1]];
-
-  return (
-    <div className="relative">
-      <Marker
-        position={position}
-        icon={breweryIcon}
-        eventHandlers={{
-          click: () => onSelect(location.id),
-          mouseover: () => !isMobile && setShowTooltip(true),
-          mouseout: () => setShowTooltip(false)
-        }}
-      />
-      <MarkerTooltip location={location} visible={showTooltip} />
-    </div>
-  );
-};
-
-const ViewportManager: React.FC<{
-  onViewportChange: (bounds: LatLngBounds) => void
-}> = ({ onViewportChange }) => {
-  const map = useMapEvents({
-    moveend: () => onViewportChange(map.getBounds()),
-    zoomend: () => onViewportChange(map.getBounds())
-  });
-
-  useEffect(() => {
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 100);
-  }, [map]);
-
-  return null;
-};
-
-const MapController: React.FC<{ 
-  selectedLocation: Location | null,
-  onMapReady: () => void
-}> = React.memo(({ selectedLocation, onMapReady }) => {
-  const map = useMap();
-  
-  useEffect(() => {
-    if (selectedLocation) {
-      map.flyTo(selectedLocation.coordinates, 16, {
-        duration: 1.5,
-        easeLinearity: 0.25
-      });
-    }
-  }, [map, selectedLocation]);
-
-  useEffect(() => {
-    map.invalidateSize();
-    onMapReady();
-  }, [map, onMapReady]);
-  
-  return null;
-});
 
 const MapView: React.FC = () => {
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: 'YOUR_API_KEY_HERE'
+  });
+
   const { filteredLocations, selectLocation, selectedLocation, isLoading } = useLocations();
-  const [userLocation, setUserLocation] = useState<LatLngTuple | null>(null);
-  const [visibleLocations, setVisibleLocations] = useState<Location[]>([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
-  const [isMapReady, setIsMapReady] = useState(false);
-  const mapRef = useRef(null);
+  const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
 
-  const handleViewportChange = useCallback((bounds: LatLngBounds) => {
-    if (filteredLocations.length > 0) {
-      setVisibleLocations(
-        filteredLocations.filter(location => bounds.contains(location.coordinates))
-      );
-    }
-  }, [filteredLocations]);
-
-  useEffect(() => {
-    const handleResize = debounce(() => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    }, 150);
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          setUserLocation([position.coords.latitude, position.coords.longitude]);
-        },
-        () => {
-          console.log('Geolocation not available');
-        }
-      );
-    }
-  }, []);
-
-  const handleLocationSelect = useCallback((id: string) => {
-    selectLocation(id);
+  const handleMarkerClick = useCallback((locationId: string) => {
+    setSelectedMarkerId(locationId);
+    selectLocation(locationId);
   }, [selectLocation]);
 
-  const handleMapReady = useCallback(() => {
-    setIsMapReady(true);
-  }, []);
+  const handleInfoWindowClose = useCallback(() => {
+    setSelectedMarkerId(null);
+    selectLocation(null);
+  }, [selectLocation]);
 
-  if (isLoading) {
+  const mapCenter = useMemo(() => DEFAULT_CENTER, []);
+
+  if (!isLoaded || isLoading) {
     return (
       <div className="h-full w-full flex items-center justify-center bg-gray-50">
         <div className="flex items-center space-x-2">
           <Loader className="w-6 h-6 animate-spin text-amber-500" />
-          <span className="text-gray-600">Loading breweries...</span>
+          <span className="text-gray-600">Loading map...</span>
         </div>
       </div>
     );
@@ -183,46 +100,33 @@ const MapView: React.FC = () => {
 
   return (
     <div className="h-full w-full relative">
-      <MapContainer 
-        ref={mapRef}
-        center={userLocation || DEFAULT_CENTER} 
-        zoom={DEFAULT_ZOOM} 
-        className="h-full w-full"
-        zoomControl={!isMobile}
-        attributionControl={true}
-        dragging={true}
-        touchZoom={true}
-        tap={true}
-        doubleClickZoom={true}
-        scrollWheelZoom={true}
+      <GoogleMap
+        mapContainerStyle={mapStyles}
+        center={mapCenter}
+        zoom={DEFAULT_ZOOM}
+        options={mapOptions}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        
-        <ViewportManager onViewportChange={handleViewportChange} />
-        <MapController selectedLocation={selectedLocation} onMapReady={handleMapReady} />
-        
-        {isMapReady && visibleLocations.map(location => (
-          <LocationMarker
-            key={location.id}
-            location={location}
-            onSelect={handleLocationSelect}
-          />
+        {filteredLocations.map((location) => (
+          <React.Fragment key={location.id}>
+            <MarkerF
+              position={{ lat: location.coordinates[0], lng: location.coordinates[1] }}
+              onClick={() => handleMarkerClick(location.id)}
+              icon={{
+                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('🍺'),
+                scaledSize: new google.maps.Size(32, 32)
+              }}
+            />
+            {selectedMarkerId === location.id && (
+              <InfoWindowF
+                position={{ lat: location.coordinates[0], lng: location.coordinates[1] }}
+                onCloseClick={handleInfoWindowClose}
+              >
+                <MarkerTooltip location={location} />
+              </InfoWindowF>
+            )}
+          </React.Fragment>
         ))}
-        
-        {userLocation && (
-          <Marker 
-            position={userLocation}
-            icon={new Icon({
-              iconUrl: '/user-location.svg',
-              iconSize: [24, 24],
-              iconAnchor: [12, 12],
-            })}
-          />
-        )}
-      </MapContainer>
+      </GoogleMap>
     </div>
   );
 };
