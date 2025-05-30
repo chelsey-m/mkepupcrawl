@@ -46,41 +46,43 @@ const MapView: React.FC = () => {
               click: () => selectLocation(location.id)
             }}
           >
-            <Popup>
-              <div className="min-w-[200px] max-w-[300px] p-2">
-                <h3 className="font-medium text-gray-900 mb-1">{location.name}</h3>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-gray-600 capitalize">
-                    {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
-                  </span>
-                  <div className="flex">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <PawPrint
-                        key={i}
-                        className={`w-3 h-3 ${
-                          i < location.rating ? 'text-amber-500' : 'text-gray-300'
-                        }`}
-                        fill={i < location.rating ? '#f59e0b' : 'none'}
-                      />
-                    ))}
+            {isSelected && (
+              <Popup>
+                <div className="min-w-[200px] max-w-[300px] p-2">
+                  <h3 className="font-medium text-gray-900 mb-1">{location.name}</h3>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-gray-600 capitalize">
+                      {location.type === 'both' ? 'Indoor & Outdoor' : location.type}
+                    </span>
+                    <div className="flex">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <PawPrint
+                          key={i}
+                          className={`w-3 h-3 ${
+                            i < location.rating ? 'text-amber-500' : 'text-gray-300'
+                          }`}
+                          fill={i < location.rating ? '#f59e0b' : 'none'}
+                        />
+                      ))}
+                    </div>
                   </div>
+                  {location.notes && (
+                    <p className="text-sm text-gray-700 mb-2">{location.notes}</p>
+                  )}
+                  {location.yelpLink && (
+                    <a
+                      href={location.yelpLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>View on Yelp</span>
+                    </a>
+                  )}
                 </div>
-                {location.notes && (
-                  <p className="text-sm text-gray-700 mb-2">{location.notes}</p>
-                )}
-                {location.yelpLink && (
-                  <a
-                    href={location.yelpLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    <span>View on Yelp</span>
-                  </a>
-                )}
-              </div>
-            </Popup>
+              </Popup>
+            )}
           </Marker>
         );
       })}
