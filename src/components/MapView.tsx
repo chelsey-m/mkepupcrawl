@@ -13,7 +13,7 @@ const breweryIcon = new Icon({
 });
 
 const MapView: React.FC = () => {
-  const { filteredLocations, selectLocation } = useLocations();
+  const { filteredLocations, selectLocation, selectedLocation } = useLocations();
   const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
@@ -35,6 +35,8 @@ const MapView: React.FC = () => {
       />
       {filteredLocations.map((location) => {
         const position: LatLngTuple = [location.coordinates[0], location.coordinates[1]];
+        const isSelected = selectedLocation?.id === location.id;
+
         return (
           <Marker
             key={location.id}
